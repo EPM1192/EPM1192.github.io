@@ -32,6 +32,8 @@
       --wing: #a8e0f0;
       --shadow-soft: 0 8px 30px rgba(58, 46, 42, 0.08);
       --shadow-card: 0 14px 40px rgba(58, 46, 42, 0.10);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -49,6 +51,24 @@
     }
     a { color: var(--heart-deep); text-underline-offset: 0.2em; transition: color 0.2s ease; }
     a:hover { color: var(--ink); }
+
+    :focus-visible {
+      outline: 2.5px solid var(--heart);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* Scroll progress bar */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--sky), var(--heart), var(--tan));
+      z-index: 100;
+      transition: width 0.1s linear;
+      border-radius: 0 3px 3px 0;
+    }
 
     .sparkles {
       position: fixed;
@@ -77,15 +97,23 @@
     .sparkles span:nth-child(8) { left: 30%; top: 38%; animation-delay: 1.8s; width: 3px; height: 3px; }
 
     .site-header {
-      position: relative;
-      z-index: 3;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
       width: min(68rem, calc(100% - 2.4rem));
       margin: 0 auto;
-      padding: 1.2rem 0 0;
+      padding: 1.2rem 1.2rem;
+      border-radius: 0 0 18px 18px;
+      transition: background 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(255, 247, 240, 0.82);
+      backdrop-filter: blur(14px) saturate(1.2);
+      box-shadow: 0 4px 24px rgba(58, 46, 42, 0.06);
     }
     .logo-mark {
       display: inline-flex;
@@ -99,6 +127,10 @@
       height: 2.2rem;
       object-fit: contain;
       animation: bob 3.2s ease-in-out infinite;
+      transition: transform 0.3s var(--ease-spring);
+    }
+    .logo-mark:hover img {
+      transform: scale(1.12) rotate(-5deg);
     }
     .logo-mark strong {
       font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
@@ -134,7 +166,7 @@
       background: var(--heart);
       transform: scaleX(0);
       transform-origin: center;
-      transition: transform 0.25s ease;
+      transition: transform 0.25s var(--ease-out);
     }
     .site-header nav a:hover { color: var(--heart-deep); }
     .site-header nav a:hover::after { transform: scaleX(1); }
@@ -169,10 +201,28 @@
       filter: blur(24px);
       z-index: -1;
       animation: drift 18s ease-in-out infinite alternate;
+      will-change: transform;
     }
     .hero-cloud.c1 { width: 14rem; height: 6rem; top: 22%; left: 8%; }
     .hero-cloud.c2 { width: 10rem; height: 4.5rem; top: 55%; right: 6%; animation-delay: -6s; animation-duration: 22s; }
     .hero-cloud.c3 { width: 8rem; height: 3.5rem; bottom: 18%; left: 28%; animation-delay: -3s; animation-duration: 16s; }
+
+    .wave-divider {
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      z-index: 2;
+      line-height: 0;
+      pointer-events: none;
+    }
+    .wave-divider svg {
+      width: 100%;
+      height: 5rem;
+      display: block;
+    }
+    .wave-divider path {
+      fill: var(--cream);
+    }
+
     .hero-stage {
       flex: 1;
       display: grid;
@@ -181,11 +231,11 @@
       gap: 1rem;
       width: min(68rem, calc(100% - 2.4rem));
       margin: 0 auto;
-      padding: 2rem 0 0;
+      padding: 5rem 0 0;
     }
     .hero-copy {
       padding: 0 0 8vh;
-      animation: rise 0.9s ease both;
+      animation: rise 0.9s var(--ease-out) both;
     }
     .hero-copy .brand-hero {
       margin: 0 0 0.85rem;
@@ -194,8 +244,11 @@
       line-height: 1.25;
       letter-spacing: 0.02em;
       font-weight: 400;
-      color: var(--ink);
-      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.35), 0 4px 12px rgba(255, 182, 208, 0.3);
+      background: linear-gradient(135deg, var(--ink) 0%, #5a3a42 40%, var(--heart-deep) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.35)) drop-shadow(0 4px 12px rgba(255, 182, 208, 0.3));
     }
     .hero-copy .lede {
       margin: 0;
@@ -203,6 +256,10 @@
       color: var(--muted);
       font-size: 1.02rem;
       line-height: 1.7;
+      animation: rise 0.8s var(--ease-out) 0.2s both;
+    }
+    .hero-copy .cta-row {
+      animation: rise 0.8s var(--ease-out) 0.4s both;
     }
     .cta-row {
       display: flex;
@@ -222,7 +279,9 @@
       font-weight: 700;
       font-size: 0.92rem;
       letter-spacing: 0.03em;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease, background 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
     .btn:hover { transform: translateY(-2px); }
     .btn:active { transform: translateY(0); }
@@ -238,6 +297,16 @@
       box-shadow: 0 14px 32px rgba(232, 78, 134, 0.38);
       background-position: 100% 50%;
     }
+    .btn-primary::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.5s ease;
+    }
+    .btn-primary:hover::before { left: 130%; }
     .btn-ghost {
       color: var(--ink);
       background: rgba(255, 255, 255, 0.55);
@@ -254,7 +323,8 @@
       justify-content: center;
       align-items: flex-end;
       min-height: 52vh;
-      animation: rise 1s ease 0.15s both;
+      animation: rise 1s var(--ease-out) 0.15s both;
+      perspective: 800px;
     }
     .hero-mascot img {
       width: min(100%, 28rem);
@@ -262,10 +332,11 @@
       filter: drop-shadow(0 18px 28px rgba(58, 46, 42, 0.18)) drop-shadow(0 0 24px rgba(168, 224, 240, 0.3));
       animation: floaty 4.2s ease-in-out infinite;
       transform-origin: 50% 80%;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s var(--ease-out);
+      will-change: transform;
     }
     .hero-mascot:hover img {
-      transform: scale(1.03);
+      transform: scale(1.04);
     }
     .wing-glow {
       position: absolute;
@@ -303,11 +374,23 @@
       background: linear-gradient(90deg, var(--heart), var(--sky));
       transform-origin: left;
       transform: scaleX(0);
-      transition: transform 0.5s ease 0.2s;
+      transition: transform 0.6s var(--ease-out) 0.15s;
     }
-    .reveal.in .panel h2::after,
     .panel.reveal.in h2::after { transform: scaleX(1); }
-    .panel p { margin: 0.55rem 0 0; color: var(--ink); }
+    .panel p {
+      margin: 0.55rem 0 0;
+      color: var(--ink);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+    .panel.reveal.in p { opacity: 1; transform: none; }
+    .panel.reveal.in p:nth-child(2) { transition-delay: 0.1s; }
+    .panel.reveal.in p:nth-child(3) { transition-delay: 0.2s; }
+    .panel.reveal.in p:nth-child(4) { transition-delay: 0.3s; }
+    .panel.reveal.in .cta-row {
+      animation: rise 0.6s var(--ease-out) 0.35s both;
+    }
     .panel .quiet { color: var(--muted); font-size: 0.95rem; }
     .panel .fine {
       margin-top: 1.4rem;
@@ -318,7 +401,7 @@
     .reveal {
       opacity: 0;
       transform: translateY(18px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
     }
     .reveal.in {
       opacity: 1;
@@ -353,6 +436,13 @@
       font-weight: 400;
       font-size: 1.1rem;
     }
+    .strip.reveal .inner > * {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+    .strip.reveal.in .inner > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.1s; }
+    .strip.reveal.in .inner > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.25s; }
 
     footer {
       position: relative;
@@ -410,7 +500,7 @@
       .hero-stage {
         grid-template-columns: 1fr;
         align-items: center;
-        padding-top: 1rem;
+        padding-top: 5rem;
       }
       .hero-copy {
         order: 2;
@@ -424,6 +514,7 @@
         min-height: 42vh;
       }
       .hero-mascot img { width: min(78%, 20rem); }
+      .wave-divider svg { height: 3rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -435,10 +526,13 @@
       .reveal { opacity: 1; transform: none; transition: none; }
       .hero-copy, .hero-mascot { animation: none; }
       .panel h2::after { transform: scaleX(1); }
+      .panel p, .strip .inner > * { opacity: 1; transform: none; }
+      .btn-primary::before { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="scroll-progress" aria-hidden="true"></div>
   <div class="sparkles" aria-hidden="true">
     <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
@@ -448,7 +542,7 @@
     <div class="hero-cloud c1" aria-hidden="true"></div>
     <div class="hero-cloud c2" aria-hidden="true"></div>
     <div class="hero-cloud c3" aria-hidden="true"></div>
-    <header class="site-header">
+    <header class="site-header" id="siteHeader">
       <a class="logo-mark" href="/">
         <img src="assets/lovulin.png" alt="">
         <div>
@@ -472,10 +566,16 @@
           <a class="btn btn-ghost" href="https://note.com/lovelin_english">note を読む</a>
         </div>
       </div>
-      <div class="hero-mascot">
+      <div class="hero-mascot" id="heroMascot">
         <div class="wing-glow" aria-hidden="true"></div>
         <img src="assets/lovulin.png" width="753" height="722" alt="らぶりん">
       </div>
+    </div>
+
+    <div class="wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <path d="M0,40 C240,80 480,0 720,30 C960,60 1200,20 1440,50 L1440,80 L0,80 Z" />
+      </svg>
     </div>
   </section>
 
@@ -519,7 +619,59 @@
   <script>
     (function () {
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduce) return;
+
+      /* Scroll progress bar */
+      var progress = document.querySelector(".scroll-progress");
+      var header = document.getElementById("siteHeader");
+
+      function onScroll() {
+        var st = window.scrollY;
+        var docH = document.documentElement.scrollHeight - window.innerHeight;
+        if (progress && docH > 0) {
+          progress.style.width = (st / docH * 100) + "%";
+        }
+        if (header) {
+          if (st > 30) header.classList.add("scrolled");
+          else header.classList.remove("scrolled");
+        }
+        /* Parallax for hero clouds */
+        if (!reduce && st < window.innerHeight) {
+          var clouds = document.querySelectorAll(".hero-cloud");
+          for (var i = 0; i < clouds.length; i++) {
+            var factor = (i + 1) * 0.15;
+            clouds[i].style.transform = "translateY(" + (st * factor) + "px)";
+          }
+          var mascotImg = document.querySelector(".hero-mascot img");
+          if (mascotImg) {
+            mascotImg.style.transform = "translateY(" + (st * 0.08) + "px)";
+          }
+        }
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      /* Mascot mouse-follow tilt */
+      if (!reduce && window.matchMedia("(pointer: fine)").matches) {
+        var mascot = document.getElementById("heroMascot");
+        if (mascot) {
+          var mascotImg = mascot.querySelector("img");
+          mascot.addEventListener("mousemove", function (e) {
+            var rect = mascot.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width - 0.5;
+            var y = (e.clientY - rect.top) / rect.height - 0.5;
+            mascotImg.style.transform = "rotateY(" + (x * 10) + "deg) rotateX(" + (-y * 8) + "deg) scale(1.03)";
+          });
+          mascot.addEventListener("mouseleave", function () {
+            mascotImg.style.transform = "";
+          });
+        }
+      }
+
+      /* Reveal on scroll */
+      if (reduce) {
+        document.querySelectorAll(".reveal").forEach(function (n) { n.classList.add("in"); });
+        return;
+      }
       var nodes = document.querySelectorAll(".reveal");
       if (!("IntersectionObserver" in window)) {
         nodes.forEach(function (n) { n.classList.add("in"); });
@@ -532,7 +684,7 @@
             io.unobserve(e.target);
           }
         });
-      }, { threshold: 0.18 });
+      }, { threshold: 0.15 });
       nodes.forEach(function (n) { io.observe(n); });
     })();
   </script>
