@@ -42,6 +42,8 @@
       justify-content: space-between;
       align-items: baseline;
       gap: 1.5rem;
+      opacity: 0;
+      animation: fade-only 1.1s ease 0.05s forwards;
     }
     .brand {
       font-family: "Shippori Mincho", serif;
@@ -74,11 +76,21 @@
       letter-spacing: 0.08em;
       margin: 0;
     }
+    h1 .ch {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(0.35em);
+      animation: rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: calc(0.18s + var(--i) * 0.07s);
+    }
     .lede {
       margin: 1.6rem 0 0;
       color: var(--muted);
       font-size: 0.95rem;
       letter-spacing: 0.04em;
+      opacity: 0;
+      transform: translateY(0.6rem);
+      animation: rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.95s forwards;
     }
     section {
       padding: 5.5rem 0;
@@ -99,14 +111,31 @@
       text-decoration: none;
       letter-spacing: 0.08em;
       font-size: 0.9rem;
-      border-bottom: 1px solid var(--ink);
       padding-bottom: 0.12rem;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-repeat: no-repeat;
+      background-position: left 100%;
+      background-size: 100% 1px;
+      transition: background-size 0.45s ease, opacity 0.2s ease;
+    }
+    .cta:hover {
+      opacity: 1;
+      background-size: 28% 1px;
     }
     .fine {
       margin: 2.2rem 0 0;
       color: var(--muted);
       font-size: 0.78rem;
       line-height: 1.75;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(1.1rem);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
     }
     footer {
       padding: 3.5rem 0 4.5rem;
@@ -123,9 +152,31 @@
     }
     footer a { color: var(--muted); text-decoration: none; }
     footer p { margin: 0.15rem 0; }
+    @keyframes rise {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    @keyframes fade-only {
+      to { opacity: 1; }
+    }
     @media (max-width: 520px) {
       header nav { gap: 1rem; }
       .hero { min-height: 62vh; padding: 3.2rem 0 3.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      header,
+      h1 .ch,
+      .lede,
+      .reveal {
+        opacity: 1;
+        transform: none;
+        animation: none;
+        transition: none;
+      }
+      .cta { transition: none; }
     }
   </style>
 </head>
@@ -140,11 +191,11 @@
     </header>
 
     <section class="hero">
-      <h1>話して、振り返る。</h1>
+      <h1 aria-label="話して、振り返る。"><span class="ch" style="--i:0">話</span><span class="ch" style="--i:1">し</span><span class="ch" style="--i:2">て</span><span class="ch" style="--i:3">、</span><span class="ch" style="--i:4">振</span><span class="ch" style="--i:5">り</span><span class="ch" style="--i:6">返</span><span class="ch" style="--i:7">る</span><span class="ch" style="--i:8">。</span></h1>
       <p class="lede">らぶりん英会話の、開発元です。</p>
     </section>
 
-    <section id="app">
+    <section id="app" class="reveal">
       <h2>APP</h2>
       <p>英語、話して終わりになっていない人向け。</p>
       <p class="quiet">日本の App Store で公開しています。</p>
@@ -152,13 +203,13 @@
       <p class="fine">一部の機能は広告・チケットで追加できます。ログインして別の端末へ引き継ぐ機能や、サブスクはありません。米国ストアでは配信していません。</p>
     </section>
 
-    <section id="about">
+    <section id="about" class="reveal">
       <h2>STUDIO</h2>
       <p>少人数で、日本からつくっています。</p>
       <p class="quiet">長い話は <a href="https://note.com/lovelin_english">note</a> に置いています。</p>
     </section>
 
-    <footer id="support">
+    <footer id="support" class="reveal">
       <div class="foot-links">
         <a href="https://different-bearberry-4e5.notion.site/3a165e25d0fc8012b317c79485ae2e69">プライバシーポリシー</a>
         <a href="mailto:isfactoryforgmail@gmail.com">サポート</a>
@@ -167,5 +218,24 @@
       <p>© I's factory</p>
     </footer>
   </div>
+  <script>
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var nodes = document.querySelectorAll(".reveal");
+      if (reduce || !("IntersectionObserver" in window)) {
+        for (var i = 0; i < nodes.length; i++) nodes[i].classList.add("in");
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+      for (var j = 0; j < nodes.length; j++) io.observe(nodes[j]);
+    })();
+  </script>
 </body>
 </html>
