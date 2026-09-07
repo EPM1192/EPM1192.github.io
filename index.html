@@ -34,6 +34,7 @@
       --shadow-card: 0 14px 40px rgba(58, 46, 42, 0.10);
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-gentle: cubic-bezier(0.4, 0, 0.2, 1);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -58,17 +59,31 @@
       border-radius: 4px;
     }
 
-    /* Scroll progress bar */
+    /* ── Scroll progress bar (enhanced) ── */
     .scroll-progress {
       position: fixed;
       top: 0; left: 0;
-      height: 3px;
+      height: 4px;
       width: 0%;
-      background: linear-gradient(90deg, var(--sky), var(--heart), var(--tan));
+      background: linear-gradient(90deg, var(--sky) 0%, var(--heart) 50%, var(--tan) 100%);
       z-index: 100;
-      transition: width 0.1s linear;
-      border-radius: 0 3px 3px 0;
+      transition: width 0.08s linear, opacity 0.3s ease;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 0 12px rgba(255, 107, 157, 0.5), 0 0 4px rgba(159, 214, 240, 0.6);
     }
+    .scroll-progress::after {
+      content: "";
+      position: absolute;
+      right: -2px; top: 50%;
+      transform: translateY(-50%);
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--tan);
+      box-shadow: 0 0 10px rgba(232, 176, 122, 0.8);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .scroll-progress.active::after { opacity: 1; }
 
     .sparkles {
       position: fixed;
@@ -96,6 +111,7 @@
     .sparkles span:nth-child(7) { left: 68%; top: 68%; animation-delay: 0.4s; width: 4px; height: 4px; }
     .sparkles span:nth-child(8) { left: 30%; top: 38%; animation-delay: 1.8s; width: 3px; height: 3px; }
 
+    /* ── Fixed header (enhanced) ── */
     .site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -108,12 +124,22 @@
       margin: 0 auto;
       padding: 1.2rem 1.2rem;
       border-radius: 0 0 18px 18px;
-      transition: background 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+      transition: background 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out),
+                  backdrop-filter 0.4s var(--ease-out), padding 0.4s var(--ease-out);
     }
     .site-header.scrolled {
-      background: rgba(255, 247, 240, 0.82);
-      backdrop-filter: blur(14px) saturate(1.2);
-      box-shadow: 0 4px 24px rgba(58, 46, 42, 0.06);
+      background: rgba(255, 247, 240, 0.85);
+      backdrop-filter: blur(16px) saturate(1.4);
+      box-shadow: 0 6px 28px rgba(58, 46, 42, 0.08);
+      padding-top: 0.85rem;
+      padding-bottom: 0.85rem;
+    }
+    .site-header.scrolled .logo-mark img {
+      width: 1.9rem;
+      height: 1.9rem;
+    }
+    .site-header.scrolled .logo-mark strong {
+      font-size: 0.88rem;
     }
     .logo-mark {
       display: inline-flex;
@@ -127,16 +153,21 @@
       height: 2.2rem;
       object-fit: contain;
       animation: bob 3.2s ease-in-out infinite;
-      transition: transform 0.3s var(--ease-spring);
+      transition: transform 0.3s var(--ease-spring), width 0.4s var(--ease-out), height 0.4s var(--ease-out);
     }
     .logo-mark:hover img {
-      transform: scale(1.12) rotate(-5deg);
+      transform: scale(1.15) rotate(-8deg);
+      animation-play-state: paused;
+    }
+    .logo-mark:active img {
+      transform: scale(1.05) rotate(-3deg);
     }
     .logo-mark strong {
       font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
       font-weight: 400;
       font-size: 0.95rem;
       letter-spacing: 0.04em;
+      transition: font-size 0.4s var(--ease-out);
     }
     .logo-mark span {
       display: block;
@@ -161,15 +192,16 @@
       content: "";
       position: absolute;
       left: 0; right: 0; bottom: -4px;
-      height: 2px;
-      border-radius: 2px;
-      background: var(--heart);
+      height: 2.5px;
+      border-radius: 2.5px;
+      background: linear-gradient(90deg, var(--heart), var(--sky));
       transform: scaleX(0);
       transform-origin: center;
-      transition: transform 0.25s var(--ease-out);
+      transition: transform 0.3s var(--ease-spring);
     }
     .site-header nav a:hover { color: var(--heart-deep); }
-    .site-header nav a:hover::after { transform: scaleX(1); }
+    .site-header nav a:hover::after { transform: scaleX(1.1); }
+    .site-header nav a:active::after { transform: scaleX(0.9); }
 
     .hero {
       position: relative;
@@ -206,7 +238,9 @@
     .hero-cloud.c1 { width: 14rem; height: 6rem; top: 22%; left: 8%; }
     .hero-cloud.c2 { width: 10rem; height: 4.5rem; top: 55%; right: 6%; animation-delay: -6s; animation-duration: 22s; }
     .hero-cloud.c3 { width: 8rem; height: 3.5rem; bottom: 18%; left: 28%; animation-delay: -3s; animation-duration: 16s; }
+    .hero-cloud.c4 { width: 6rem; height: 3rem; top: 38%; left: 52%; animation-delay: -9s; animation-duration: 20s; opacity: 0.7; }
 
+    /* ── Wave divider (enhanced — dual layer) ── */
     .wave-divider {
       position: absolute;
       bottom: -1px; left: 0; right: 0;
@@ -219,8 +253,17 @@
       height: 5rem;
       display: block;
     }
-    .wave-divider path {
+    .wave-divider .wave-back {
+      fill: rgba(255, 247, 240, 0.5);
+      animation: wave-flow 12s ease-in-out infinite alternate;
+    }
+    .wave-divider .wave-front {
       fill: var(--cream);
+      animation: wave-flow 8s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes wave-flow {
+      from { transform: translateX(-20px); }
+      to { transform: translateX(20px); }
     }
 
     .hero-stage {
@@ -237,6 +280,7 @@
       padding: 0 0 8vh;
       animation: rise 0.9s var(--ease-out) both;
     }
+    /* ── Title gradient (enhanced — animated shimmer) ── */
     .hero-copy .brand-hero {
       margin: 0 0 0.85rem;
       font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
@@ -244,11 +288,17 @@
       line-height: 1.25;
       letter-spacing: 0.02em;
       font-weight: 400;
-      background: linear-gradient(135deg, var(--ink) 0%, #5a3a42 40%, var(--heart-deep) 100%);
+      background: linear-gradient(135deg, var(--ink) 0%, #5a3a42 30%, var(--heart-deep) 60%, var(--heart) 80%, #5a3a42 100%);
+      background-size: 250% 250%;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.35)) drop-shadow(0 4px 12px rgba(255, 182, 208, 0.3));
+      animation: rise 0.9s var(--ease-out) both, gradient-pan 8s ease-in-out infinite;
+    }
+    @keyframes gradient-pan {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .hero-copy .lede {
       margin: 0;
@@ -267,6 +317,7 @@
       gap: 0.75rem;
       margin-top: 1.6rem;
     }
+    /* ── Button shimmer (enhanced — both buttons) ── */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -279,12 +330,12 @@
       font-weight: 700;
       font-size: 0.92rem;
       letter-spacing: 0.03em;
-      transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease, background 0.2s ease;
+      transition: transform 0.25s var(--ease-spring), box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
       position: relative;
       overflow: hidden;
     }
-    .btn:hover { transform: translateY(-2px); }
-    .btn:active { transform: translateY(0); }
+    .btn:hover { transform: translateY(-3px); }
+    .btn:active { transform: translateY(-1px) scale(0.98); }
     .btn-primary {
       color: #fff;
       background: linear-gradient(135deg, var(--heart) 0%, var(--heart-deep) 100%);
@@ -294,29 +345,42 @@
       background-position: 0% 50%;
     }
     .btn-primary:hover {
-      box-shadow: 0 14px 32px rgba(232, 78, 134, 0.38);
+      box-shadow: 0 16px 36px rgba(232, 78, 134, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
       background-position: 100% 50%;
     }
     .btn-primary::before {
       content: "";
       position: absolute;
       top: 0; left: -100%;
-      width: 60%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      width: 70%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
       transform: skewX(-20deg);
-      transition: left 0.5s ease;
+      transition: left 0.6s var(--ease-out);
     }
-    .btn-primary:hover::before { left: 130%; }
+    .btn-primary:hover::before { left: 140%; }
     .btn-ghost {
       color: var(--ink);
       background: rgba(255, 255, 255, 0.55);
       border: 2px solid rgba(58, 46, 42, 0.12);
       backdrop-filter: blur(6px);
     }
-    .btn-ghost:hover {
-      background: rgba(255, 255, 255, 0.75);
-      border-color: rgba(58, 46, 42, 0.2);
+    .btn-ghost::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 70%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.6s var(--ease-out);
     }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.78);
+      border-color: rgba(255, 107, 157, 0.25);
+      box-shadow: 0 8px 24px rgba(58, 46, 42, 0.06);
+    }
+    .btn-ghost:hover::before { left: 140%; }
+
+    /* ── 3D mascot (enhanced — stronger tilt, spring return, cursor glow) ── */
     .hero-mascot {
       position: relative;
       display: flex;
@@ -324,7 +388,7 @@
       align-items: flex-end;
       min-height: 52vh;
       animation: rise 1s var(--ease-out) 0.15s both;
-      perspective: 800px;
+      perspective: 900px;
     }
     .hero-mascot img {
       width: min(100%, 28rem);
@@ -332,12 +396,24 @@
       filter: drop-shadow(0 18px 28px rgba(58, 46, 42, 0.18)) drop-shadow(0 0 24px rgba(168, 224, 240, 0.3));
       animation: floaty 4.2s ease-in-out infinite;
       transform-origin: 50% 80%;
-      transition: transform 0.4s var(--ease-out);
+      transition: transform 0.5s var(--ease-spring), filter 0.3s ease;
       will-change: transform;
     }
     .hero-mascot:hover img {
-      transform: scale(1.04);
+      filter: drop-shadow(0 22px 34px rgba(58, 46, 42, 0.22)) drop-shadow(0 0 32px rgba(168, 224, 240, 0.45));
     }
+    .hero-mascot .cursor-glow {
+      position: absolute;
+      width: 12rem; height: 12rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 182, 208, 0.25), transparent 65%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+      will-change: transform;
+    }
+    .hero-mascot:hover .cursor-glow { opacity: 1; }
     .wing-glow {
       position: absolute;
       width: 70%;
@@ -374,23 +450,22 @@
       background: linear-gradient(90deg, var(--heart), var(--sky));
       transform-origin: left;
       transform: scaleX(0);
-      transition: transform 0.6s var(--ease-out) 0.15s;
+      transition: transform 0.7s var(--ease-spring) 0.15s;
     }
     .panel.reveal.in h2::after { transform: scaleX(1); }
-    .panel p {
-      margin: 0.55rem 0 0;
-      color: var(--ink);
+    /* ── Paragraph staggered reveal (enhanced — includes h2, spring easing) ── */
+    .panel h2,
+    .panel p,
+    .panel .cta-row {
       opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+      transform: translateY(14px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-spring);
     }
-    .panel.reveal.in p { opacity: 1; transform: none; }
-    .panel.reveal.in p:nth-child(2) { transition-delay: 0.1s; }
-    .panel.reveal.in p:nth-child(3) { transition-delay: 0.2s; }
-    .panel.reveal.in p:nth-child(4) { transition-delay: 0.3s; }
-    .panel.reveal.in .cta-row {
-      animation: rise 0.6s var(--ease-out) 0.35s both;
-    }
+    .panel.reveal.in h2 { opacity: 1; transform: none; transition-delay: 0s; }
+    .panel.reveal.in p:nth-of-type(1) { opacity: 1; transform: none; transition-delay: 0.12s; }
+    .panel.reveal.in p:nth-of-type(2) { opacity: 1; transform: none; transition-delay: 0.24s; }
+    .panel.reveal.in p:nth-of-type(3) { opacity: 1; transform: none; transition-delay: 0.36s; }
+    .panel.reveal.in .cta-row { opacity: 1; transform: none; transition-delay: 0.48s; }
     .panel .quiet { color: var(--muted); font-size: 0.95rem; }
     .panel .fine {
       margin-top: 1.4rem;
@@ -439,10 +514,10 @@
     .strip.reveal .inner > * {
       opacity: 0;
       transform: translateY(10px);
-      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-spring);
     }
     .strip.reveal.in .inner > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.1s; }
-    .strip.reveal.in .inner > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.25s; }
+    .strip.reveal.in .inner > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.28s; }
 
     footer {
       position: relative;
@@ -522,12 +597,16 @@
       .logo-mark img,
       .hero-mascot img,
       .wing-glow,
-      .hero-cloud { animation: none !important; }
+      .hero-cloud,
+      .wave-divider .wave-back,
+      .wave-divider .wave-front { animation: none !important; }
       .reveal { opacity: 1; transform: none; transition: none; }
       .hero-copy, .hero-mascot { animation: none; }
+      .hero-copy .brand-hero { animation: none; }
       .panel h2::after { transform: scaleX(1); }
-      .panel p, .strip .inner > * { opacity: 1; transform: none; }
-      .btn-primary::before { display: none; }
+      .panel h2, .panel p, .panel .cta-row,
+      .strip .inner > * { opacity: 1; transform: none; }
+      .btn-primary::before, .btn-ghost::before { display: none; }
     }
   </style>
 </head>
@@ -542,6 +621,7 @@
     <div class="hero-cloud c1" aria-hidden="true"></div>
     <div class="hero-cloud c2" aria-hidden="true"></div>
     <div class="hero-cloud c3" aria-hidden="true"></div>
+    <div class="hero-cloud c4" aria-hidden="true"></div>
     <header class="site-header" id="siteHeader">
       <a class="logo-mark" href="/">
         <img src="assets/lovulin.png" alt="">
@@ -567,6 +647,7 @@
         </div>
       </div>
       <div class="hero-mascot" id="heroMascot">
+        <div class="cursor-glow" aria-hidden="true"></div>
         <div class="wing-glow" aria-hidden="true"></div>
         <img src="assets/lovulin.png" width="753" height="722" alt="らぶりん">
       </div>
@@ -574,7 +655,8 @@
 
     <div class="wave-divider" aria-hidden="true">
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <path d="M0,40 C240,80 480,0 720,30 C960,60 1200,20 1440,50 L1440,80 L0,80 Z" />
+        <path class="wave-back" d="M0,45 C200,75 400,15 720,35 C1040,55 1240,25 1440,45 L1440,80 L0,80 Z" />
+        <path class="wave-front" d="M0,40 C240,80 480,0 720,30 C960,60 1200,20 1440,50 L1440,80 L0,80 Z" />
       </svg>
     </div>
   </section>
@@ -619,47 +701,64 @@
   <script>
     (function () {
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var fine = window.matchMedia("(pointer: fine)").matches;
 
-      /* Scroll progress bar */
+      /* Scroll progress bar + header */
       var progress = document.querySelector(".scroll-progress");
       var header = document.getElementById("siteHeader");
+      var ticking = false;
 
       function onScroll() {
         var st = window.scrollY;
         var docH = document.documentElement.scrollHeight - window.innerHeight;
         if (progress && docH > 0) {
-          progress.style.width = (st / docH * 100) + "%";
+          var pct = st / docH * 100;
+          progress.style.width = pct + "%";
+          if (pct > 2) progress.classList.add("active");
+          else progress.classList.remove("active");
         }
         if (header) {
           if (st > 30) header.classList.add("scrolled");
           else header.classList.remove("scrolled");
         }
-        /* Parallax for hero clouds */
+        /* Parallax for hero clouds + mascot */
         if (!reduce && st < window.innerHeight) {
           var clouds = document.querySelectorAll(".hero-cloud");
           for (var i = 0; i < clouds.length; i++) {
-            var factor = (i + 1) * 0.15;
+            var factor = (i + 1) * 0.12;
             clouds[i].style.transform = "translateY(" + (st * factor) + "px)";
           }
           var mascotImg = document.querySelector(".hero-mascot img");
-          if (mascotImg) {
-            mascotImg.style.transform = "translateY(" + (st * 0.08) + "px)";
+          if (mascotImg && !mascot.contains(document.activeElement)) {
+            mascotImg.style.transform = "translateY(" + (st * 0.06) + "px)";
           }
         }
+        ticking = false;
       }
-      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("scroll", function () {
+        if (!ticking) {
+          requestAnimationFrame(onScroll);
+          ticking = true;
+        }
+      }, { passive: true });
       onScroll();
 
-      /* Mascot mouse-follow tilt */
-      if (!reduce && window.matchMedia("(pointer: fine)").matches) {
+      /* 3D mascot mouse-follow tilt + cursor glow */
+      if (!reduce && fine) {
         var mascot = document.getElementById("heroMascot");
         if (mascot) {
           var mascotImg = mascot.querySelector("img");
+          var glow = mascot.querySelector(".cursor-glow");
           mascot.addEventListener("mousemove", function (e) {
             var rect = mascot.getBoundingClientRect();
             var x = (e.clientX - rect.left) / rect.width - 0.5;
             var y = (e.clientY - rect.top) / rect.height - 0.5;
-            mascotImg.style.transform = "rotateY(" + (x * 10) + "deg) rotateX(" + (-y * 8) + "deg) scale(1.03)";
+            mascotImg.style.transform =
+              "rotateY(" + (x * 14) + "deg) rotateX(" + (-y * 10) + "deg) scale(1.05)";
+            if (glow) {
+              glow.style.transform =
+                "translate(" + (e.clientX - rect.left - 96) + "px," + (e.clientY - rect.top - 96) + "px)";
+            }
           });
           mascot.addEventListener("mouseleave", function () {
             mascotImg.style.transform = "";
@@ -684,7 +783,7 @@
             io.unobserve(e.target);
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
       nodes.forEach(function (n) { io.observe(n); });
     })();
   </script>
