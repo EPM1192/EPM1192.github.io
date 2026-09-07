@@ -1,0 +1,14 @@
+{
+  "name": "lovulin-english",
+  "version": "1.0.0",
+  "private": true,
+  "description": "らぶりん英会話｜I's factory — static site",
+  "dependencies": {
+    "serve": "^14.2.4"
+  },
+  "scripts": {
+    "dev": "npx serve -l 5173 .",
+    "serve": "npx serve -l 5173 .",
+    "start": "npx serve -l 5173 ."
+  }
+}
