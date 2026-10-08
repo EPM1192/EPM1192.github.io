@@ -322,6 +322,12 @@
       gap: 0.75rem;
       margin-top: 1.6rem;
     }
+    .hero-copy .cta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 28rem;
+    }
+    .hero-copy .btn { width: 100%; }
     .btn {
       position: relative;
       display: inline-flex;
@@ -450,6 +456,15 @@
     }
 
     main { position: relative; z-index: 1; background: var(--cream); }
+    #main,
+    #moments,
+    #howto,
+    #screens,
+    #app,
+    #about,
+    #support {
+      scroll-margin-top: calc(var(--header-h) + 0.75rem);
+    }
     .panel {
       width: min(42rem, calc(100% - 2.4rem));
       margin: 0 auto;
@@ -809,6 +824,11 @@
         margin-inline: auto;
       }
       .btn { width: 100%; max-width: none; padding-inline: 0.8rem; }
+      .cta-row .btn-ghost { grid-column: 1 / -1; }
+    }
+    @media (max-width: 420px) {
+      :root { --header-h: 8.6rem; }
+      .site-header nav { gap: 0.15rem 0.55rem; font-size: 0.72rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -878,7 +898,7 @@
           <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6792189779">App Store で見る</a>
           <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play で見る</a>
           <a class="btn btn-ghost" href="https://note.com/lovelin_english">note を読む</a>
-          <a class="btn btn-ghost" href="https://x.com/loverin_eikaiwa">X（@loverin_eikaiwa）</a>
+          <a class="btn btn-ghost" href="https://x.com/loverin_eikaiwa">X @loverin_eikaiwa</a>
         </div>
       </div>
       <div class="hero-mascot" id="mascot">
