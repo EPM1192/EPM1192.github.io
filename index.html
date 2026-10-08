@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>らぶりん英会話｜I's factory</title>
-  <meta name="description" content="英語学習アプリ「らぶりん英会話」の開発元 I's factory。話して、振り返る。">
+  <meta name="description" content="話して、振り返る。詰まった一言が、次に言える英語になる。">
   <link rel="canonical" href="https://epm1192.github.io/">
   <meta property="og:title" content="らぶりん英会話｜I's factory">
-  <meta property="og:description" content="話して、振り返る。らぶりん英会話の開発元です。">
+  <meta property="og:description" content="話して、振り返る。詰まった一言が、次に言える英語になる。">
   <meta property="og:url" content="https://epm1192.github.io/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ja_JP">
@@ -31,6 +31,8 @@
       --line: rgba(58, 46, 42, 0.12);
       --wing: #a8e0f0;
       --header-h: 4.5rem;
+      --link: #9d2156;
+      --ink-soft: #5c463f;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -44,8 +46,39 @@
       background: var(--cream);
       overflow-x: hidden;
     }
-    a { color: var(--heart-deep); text-underline-offset: 0.2em; }
+    a { color: var(--link); text-underline-offset: 0.2em; }
     a:hover { color: var(--ink); }
+    :focus-visible {
+      outline: 3px solid var(--link);
+      outline-offset: 3px;
+    }
+    .skip {
+      position: absolute;
+      left: 0.6rem;
+      top: 0.6rem;
+      z-index: 200;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: none;
+      transform: translateY(-160%);
+    }
+    .skip:focus {
+      transform: none;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     /* Scroll progress */
     .scroll-progress {
@@ -195,11 +228,11 @@
       font-size: 0.82rem;
     }
     .site-header nav a {
-      color: var(--muted);
+      color: var(--ink-soft);
       text-decoration: none;
       font-weight: 700;
     }
-    .site-header nav a:hover { color: var(--heart-deep); }
+    .site-header nav a:hover { color: var(--link); }
 
     .hero {
       position: relative;
@@ -278,10 +311,10 @@
     }
     .hero-copy .lede {
       margin: 0;
-      max-width: 22rem;
-      color: var(--muted);
-      font-size: 1.02rem;
-      line-height: 1.7;
+      max-width: 26rem;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      line-height: 1.85;
     }
     .cta-row {
       display: flex;
@@ -289,6 +322,12 @@
       gap: 0.75rem;
       margin-top: 1.6rem;
     }
+    .hero-copy .cta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 28rem;
+    }
+    .hero-copy .btn { width: 100%; }
     .btn {
       position: relative;
       display: inline-flex;
@@ -320,17 +359,17 @@
     .btn:hover { transform: translateY(-2px); }
     .btn-primary {
       color: #fff;
-      background: linear-gradient(135deg, var(--heart) 0%, var(--heart-deep) 100%);
-      box-shadow: 0 10px 24px rgba(232, 78, 134, 0.28);
+      background: linear-gradient(135deg, #c73d74 0%, #a61d58 100%);
+      box-shadow: 0 10px 24px rgba(166, 29, 88, 0.28);
       border: 2px solid transparent;
     }
     .btn-primary:hover {
-      box-shadow: 0 14px 28px rgba(232, 78, 134, 0.38);
+      box-shadow: 0 14px 28px rgba(166, 29, 88, 0.34);
     }
     .btn-ghost {
       color: var(--ink);
-      background: rgba(255, 255, 255, 0.55);
-      border: 2px solid rgba(58, 46, 42, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid rgba(58, 46, 42, 0.16);
       backdrop-filter: blur(6px);
     }
     .btn-ghost:hover {
@@ -417,6 +456,15 @@
     }
 
     main { position: relative; z-index: 1; background: var(--cream); }
+    #main,
+    #moments,
+    #howto,
+    #screens,
+    #app,
+    #about,
+    #support {
+      scroll-margin-top: calc(var(--header-h) + 0.75rem);
+    }
     .panel {
       width: min(42rem, calc(100% - 2.4rem));
       margin: 0 auto;
@@ -493,9 +541,248 @@
       gap: 0.4rem 1.4rem;
       margin: 0 0 1rem;
     }
-    footer a { color: var(--muted); text-decoration: none; font-weight: 700; }
-    footer a:hover { color: var(--heart-deep); }
+    footer a { color: var(--ink-soft); text-decoration: none; font-weight: 700; }
+    footer a:hover { color: var(--link); }
     footer p { margin: 0.2rem 0; }
+
+    .panel-wide {
+      width: min(68rem, calc(100% - 2.4rem));
+    }
+    .section-lead {
+      margin: 0;
+      max-width: 36rem;
+      color: var(--ink-soft);
+    }
+    .scene-grid,
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 1.35rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .scene-card,
+    .step {
+      margin: 0;
+      padding: 1.15rem 1.15rem 1.2rem;
+      border-radius: 1.4rem;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(58, 46, 42, 0.08);
+      box-shadow: 0 10px 28px rgba(58, 46, 42, 0.05);
+    }
+    .scene-card {
+      display: flex;
+      flex-direction: column;
+    }
+    .scene-card .scene-kicker {
+      margin: 0;
+      color: var(--link);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .scene-card h3,
+    .step h3 {
+      margin: 0.4rem 0 0;
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+    .scene-card p,
+    .step p {
+      margin: 0.7rem 0 0;
+    }
+    .scene-card > p:not(.scene-kicker) {
+      flex: 1 1 auto;
+    }
+    .lovu-say {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-top: 1rem;
+      padding: 0.85rem 0.9rem 0.9rem;
+      border-radius: 1.15rem;
+      background: rgba(255, 182, 208, 0.34);
+    }
+    .lovu-say img {
+      width: 2.75rem;
+      height: 2.75rem;
+      object-fit: contain;
+      flex: none;
+    }
+    .lovu-say p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .lovu-name {
+      display: block;
+      margin-bottom: 0.15rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--link);
+    }
+    .eiken-note {
+      max-width: 46rem;
+    }
+    .band {
+      margin-top: 4rem;
+      padding: 3.2rem 0 3.5rem;
+      background:
+        linear-gradient(90deg, rgba(159, 214, 240, 0.32), rgba(255, 182, 208, 0.24), rgba(255, 226, 200, 0.42));
+      border-block: 1px solid var(--line);
+    }
+    .band .panel { padding-top: 0; }
+    .steps { counter-reset: step; }
+    .step { position: relative; }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      background: var(--peach);
+      color: var(--ink);
+      font-family: "Mochiy Pop One", sans-serif;
+      font-size: 0.95rem;
+    }
+    .step:nth-child(1) .step-num { background: #b7e3f6; }
+    .step:nth-child(2) .step-num { background: #ffc4da; }
+    .step:nth-child(3) .step-num { background: #ffe2c8; }
+    .screen-carousel { margin-top: 1.35rem; }
+    .screen-scroller {
+      position: relative;
+      display: flex;
+      gap: 0.9rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scroll-padding-inline: 0.15rem;
+      overscroll-behavior-x: contain;
+      padding: 0.35rem 0.15rem 0.85rem;
+      margin: 0;
+      scrollbar-width: none;
+    }
+    .screen-scroller::-webkit-scrollbar { display: none; }
+    .screen-slide {
+      flex: 0 0 min(15.5rem, 74%);
+      scroll-snap-align: start;
+      margin: 0;
+    }
+    .phone {
+      position: relative;
+      padding: 1.05rem 0.42rem 0.48rem;
+      border-radius: 1.7rem;
+      background: linear-gradient(180deg, #fffefc 0%, #fff4ea 100%);
+      border: 1px solid rgba(58, 46, 42, 0.16);
+      box-shadow: 0 16px 34px rgba(58, 46, 42, 0.12);
+    }
+    .phone::before,
+    .phone::after {
+      content: "";
+      position: absolute;
+      width: 3px;
+      border-radius: 2px;
+      background: rgba(58, 46, 42, 0.16);
+    }
+    .phone::before {
+      left: 0;
+      top: 4.4rem;
+      height: 1.35rem;
+    }
+    .phone::after {
+      right: 0;
+      top: 5.1rem;
+      height: 2.15rem;
+    }
+    .phone-island {
+      position: absolute;
+      top: 0.32rem;
+      left: 50%;
+      width: 34%;
+      height: 0.52rem;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #2a2422;
+    }
+    .phone-screen {
+      border-radius: 1.15rem;
+      overflow: hidden;
+      background: #fff;
+      line-height: 0;
+    }
+    .screen-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+    }
+    .screen-slide figcaption {
+      margin: 0.7rem 0.15rem 0;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+    .screen-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+      margin-top: 0.15rem;
+    }
+    .screen-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(58, 46, 42, 0.18);
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .screen-nav:hover { border-color: var(--link); color: var(--link); }
+    .screen-nav svg { display: block; }
+    .screen-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .screen-dot {
+      width: 0.7rem;
+      height: 0.7rem;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: #8d756c;
+      cursor: pointer;
+    }
+    .screen-dot[aria-current="true"] {
+      width: 1.65rem;
+      background: var(--link);
+    }
+    @media (min-width: 860px) {
+      .scene-grid,
+      .steps { grid-template-columns: repeat(3, 1fr); }
+      .screen-carousel { max-width: 54rem; margin-inline: auto; }
+      .screen-slide { flex-basis: 16.5rem; }
+      .screen-scroller { padding-right: calc(100% - 16.5rem); }
+    }
+    @media (hover: hover) {
+      .scene-card,
+      .step { transition: transform 0.2s ease; }
+      .scene-card:hover,
+      .step:hover { transform: translateY(-3px); }
+    }
 
     @keyframes floaty {
       0%, 100% { transform: translateY(0) rotate(-1deg); }
@@ -552,7 +839,30 @@
         min-height: 42vh;
       }
       .hero-mascot img { width: min(78%, 20rem); }
-      .site-header nav { gap: 0.85rem; font-size: 0.75rem; }
+      .site-header nav { gap: 0.35rem 0.85rem; font-size: 0.78rem; }
+      :root { --header-h: 7.6rem; }
+      .site-header {
+        flex-wrap: wrap;
+        row-gap: 0.35rem;
+      }
+      .site-header nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .site-header nav a { padding: 0.35rem 0.15rem; }
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 28rem;
+        margin-inline: auto;
+      }
+      .btn { width: 100%; max-width: none; padding-inline: 0.8rem; }
+      .cta-row .btn-ghost { grid-column: 1 / -1; }
+    }
+    @media (max-width: 420px) {
+      :root { --header-h: 8.6rem; }
+      .site-header nav { gap: 0.15rem 0.55rem; font-size: 0.72rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -570,12 +880,17 @@
         transition: none;
       }
       .hero-copy, .hero-mascot { animation: none; }
+      .screen-scroller { scroll-behavior: auto; }
       .logo-mark:hover { transform: none; }
-      .btn:hover { transform: none; }
+      .btn:hover,
+      .scene-card:hover,
+      .step:hover { transform: none; }
     }
   </style>
 </head>
 <body>
+  <a class="skip" href="#main">本文へスキップ</a>
+  <noscript><style>.reveal-step{opacity:1;transform:none}</style></noscript>
   <div class="scroll-progress" aria-hidden="true">
     <div class="scroll-progress__bar"></div>
     <div class="scroll-progress__dot"></div>
@@ -593,10 +908,12 @@
         <span class="logo-sub">by I's factory</span>
       </div>
     </a>
-    <nav>
-      <a href="#app">App</a>
-      <a href="#about">Studio</a>
-      <a href="#support">Support</a>
+    <nav aria-label="ページ内">
+      <a href="#moments">こんな時に</a>
+      <a href="#howto">使い方</a>
+      <a href="#screens">画面</a>
+      <a href="#about">スタジオ</a>
+      <a href="#support">サポート</a>
     </nav>
   </header>
 
@@ -611,18 +928,19 @@
     <div class="hero-stage">
       <div class="hero-copy">
         <h1 class="brand-hero">らぶりん英会話</h1>
-        <p class="lede">話して、振り返る。<br>英語学習アプリの開発元です。</p>
+        <p class="lede">話して、振り返る。<br>詰まった一言が、次に言える英語になる。</p>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6792189779">App Store で見る</a>
           <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play で見る</a>
           <a class="btn btn-ghost" href="https://note.com/lovelin_english">note を読む</a>
+          <a class="btn btn-ghost" href="https://x.com/loverin_eikaiwa">X @loverin_eikaiwa</a>
         </div>
       </div>
       <div class="hero-mascot" id="mascot">
         <div class="mascot-orb" aria-hidden="true"></div>
         <div class="wing-glow" aria-hidden="true"></div>
         <div class="mascot-tilt">
-          <img src="assets/lovulin.png" width="753" height="722" alt="らぶりん">
+          <img src="assets/lovulin.png" width="753" height="722" alt="青い翼と虹色のつの、ピンクのハートをつけた猫のキャラクター、らぶりん">
         </div>
       </div>
     </div>
@@ -639,9 +957,131 @@
     </div>
   </section>
 
-  <main>
-    <section class="panel reveal-group" id="app">
-      <h2 class="reveal-step" data-step="1">アプリのこと</h2>
+  <main id="main">
+    <section class="panel panel-wide reveal-group" id="moments" aria-labelledby="moments-title">
+      <h2 class="reveal-step" id="moments-title" data-step="1">こんな時に</h2>
+      <p class="section-lead reveal-step" data-step="2">話す直前で、言葉が一つだけ止まること、ありますよね。</p>
+      <div class="scene-grid">
+        <article class="scene-card reveal-step" data-step="3">
+          <p class="scene-kicker">お店で</p>
+          <h3>「<span lang="en">smaller</span>」しか出てこない</h3>
+          <p>店員さん役のAIに「もう少し小さいサイズありますか？」と言いたいのに「<span lang="en">smaller</span>」しか出ない。</p>
+          <div class="lovu-say">
+            <img src="assets/lovulin.png" width="96" height="92" alt="" decoding="async">
+            <p><span class="lovu-name">らぶりん</span>止まった一言だけ一緒に見直そ。次はそこから言えるよ</p>
+          </div>
+        </article>
+        <article class="scene-card reveal-step" data-step="4" aria-describedby="eiken-note">
+          <p class="scene-kicker">面接の練習</p>
+          <h3>理由を聞かれて、固まる</h3>
+          <p>英検®の面接練習で「<span lang="en">Why do you think so?</span>」と聞かれて、固まる。</p>
+          <div class="lovu-say">
+            <img src="assets/lovulin.png" width="96" height="92" alt="" decoding="async">
+            <p><span class="lovu-name">らぶりん</span>理由は1つでいいよ！</p>
+          </div>
+        </article>
+        <article class="scene-card reveal-step" data-step="5">
+          <p class="scene-kicker">好きなキャラと</p>
+          <h3>「<span lang="en">Yes…</span>」しか言えない</h3>
+          <p>好きなキャラと英語で話せるのに、緊張して「<span lang="en">Yes…</span>」しか言えない。</p>
+          <div class="lovu-say">
+            <img src="assets/lovulin.png" width="96" height="92" alt="" decoding="async">
+            <p><span class="lovu-name">らぶりん</span>そこが次に覚える英語だよ</p>
+          </div>
+        </article>
+      </div>
+      <p class="fine eiken-note reveal-step" id="eiken-note" data-step="5">英検®は公益財団法人 日本英語検定協会の登録商標です。本アプリは同協会および文部科学省の公認・推薦を受けたものではありません。</p>
+    </section>
+
+    <section class="band" id="howto" aria-labelledby="howto-title">
+      <div class="panel panel-wide reveal-group">
+        <h2 class="reveal-step" id="howto-title" data-step="1">使い方</h2>
+        <p class="section-lead reveal-step" data-step="2">話す、振り返る、もう一回。この三つです。</p>
+        <ol class="steps">
+          <li class="step reveal-step" data-step="3">
+            <span class="step-num" aria-hidden="true">1</span>
+            <h3>話す</h3>
+            <p>テーマや場面を選んで、AIと英語で話します。声でも入力できます。</p>
+          </li>
+          <li class="step reveal-step" data-step="4">
+            <span class="step-num" aria-hidden="true">2</span>
+            <h3>振り返る</h3>
+            <p>話し終えたら、語彙・文法・やり取り・発音を見返せます。</p>
+          </li>
+          <li class="step reveal-step" data-step="5">
+            <span class="step-num" aria-hidden="true">3</span>
+            <h3>もう一回</h3>
+            <p>振り返ったあと、もう一度話せます。ホームの「今日のおすすめ」から、次に練習することも選べます。</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="panel panel-wide reveal-group" id="screens" aria-labelledby="screens-title">
+      <h2 class="reveal-step" id="screens-title" data-step="1">アプリの画面</h2>
+      <p class="section-lead reveal-step" data-step="2">会話の画面と、話したあとの振り返りです。</p>
+      <div class="screen-carousel reveal-step" data-step="3">
+        <div class="screen-scroller" id="screen-scroller" tabindex="0" role="region" aria-roledescription="カルーセル" aria-label="アプリの画面。左右のボタンかスワイプで送れます。">
+          <figure class="screen-slide">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen1.webp" width="600" height="1298" alt="会話画面。らぶりんコーチが、風景画と写真の話で接続詞 but の使い方を示している。" decoding="async">
+              </div>
+            </div>
+            <figcaption>らぶりんコーチで、次の英語が身につく</figcaption>
+          </figure>
+          <figure class="screen-slide">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen2.webp" width="600" height="1298" alt="文法の解説画面。ユーザーの年や性格に合わせた解説が出る。" decoding="async">
+              </div>
+            </div>
+            <figcaption>ユーザーの年や性格に合わせた解説</figcaption>
+          </figure>
+          <figure class="screen-slide">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen3.webp" width="600" height="1298" alt="振り返り画面。語彙、文法、やり取り、発音の点数と、会話の回数や語数が並んでいる。" decoding="async">
+              </div>
+            </div>
+            <figcaption>話したあと 4つの観点で振り返り</figcaption>
+          </figure>
+          <figure class="screen-slide">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen4.webp" width="600" height="1298" alt="語彙の振り返り画面。CEFRのレベルごとの語数をタップすると、単語のリストが見られる。" decoding="async">
+              </div>
+            </div>
+            <figcaption>使った単語を、レベルごとに見る</figcaption>
+          </figure>
+        </div>
+        <div class="screen-controls">
+          <button type="button" class="screen-nav" data-dir="-1" aria-label="前の画面">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M11.2 3.6 6.2 9l5 5.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <div class="screen-dots">
+            <button type="button" class="screen-dot" data-index="0" aria-label="1枚目：らぶりんコーチで、次の英語が身につく" aria-current="true"></button>
+            <button type="button" class="screen-dot" data-index="1" aria-label="2枚目：ユーザーの年や性格に合わせた解説"></button>
+            <button type="button" class="screen-dot" data-index="2" aria-label="3枚目：話したあと 4つの観点で振り返り"></button>
+            <button type="button" class="screen-dot" data-index="3" aria-label="4枚目：使った単語を、レベルごとに見る"></button>
+          </div>
+          <button type="button" class="screen-nav" data-dir="1" aria-label="次の画面">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M6.8 3.6 11.8 9l-5 5.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel reveal-group" id="app" aria-labelledby="app-title">
+      <h2 class="reveal-step" id="app-title" data-step="1">アプリのこと</h2>
       <p class="reveal-step" data-step="2">英語を話して終わりにしない人向けの、会話と振り返りのアプリです。</p>
       <p class="quiet reveal-step" data-step="3">日本の App Store と Google Play で公開しています。</p>
       <p class="fine reveal-step" data-step="4">一部の機能は広告・チケットで追加できます。ログインして別の端末へ引き継ぐ機能や、サブスクはありません。米国ストアでは配信していません。</p>
@@ -658,10 +1098,10 @@
       </div>
     </div>
 
-    <section class="panel reveal-group" id="about">
-      <h2 class="reveal-step" data-step="1">つくっているところ</h2>
+    <section class="panel reveal-group" id="about" aria-labelledby="about-title">
+      <h2 class="reveal-step" id="about-title" data-step="1">つくっているところ</h2>
       <p class="reveal-step" data-step="2">I's factory。少人数で、日本からつくっています。</p>
-      <p class="quiet reveal-step" data-step="3">長い話は <a href="https://note.com/lovelin_english">note「らぶりん」</a> に置いています。</p>
+      <p class="quiet reveal-step" data-step="3">長い話は <a href="https://note.com/lovelin_english">note「らぶりん」</a> に置いています。<a href="https://x.com/loverin_eikaiwa">X（@loverin_eikaiwa）</a> もあります。</p>
     </section>
   </main>
 
@@ -670,6 +1110,8 @@
       <div class="foot-links">
         <a href="https://different-bearberry-4e5.notion.site/3a165e25d0fc8012b317c79485ae2e69">プライバシーポリシー</a>
         <a href="mailto:isfactoryforgmail@gmail.com">サポート</a>
+        <a href="https://note.com/lovelin_english">note</a>
+        <a href="https://x.com/loverin_eikaiwa">X（@loverin_eikaiwa）</a>
         <a href="https://apps.apple.com/jp/app/id6792189779">App Store</a>
         <a href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play</a>
       </div>
@@ -751,6 +1193,120 @@
           n.classList.add("in");
         });
       }
+
+      (function initScreens() {
+        var carousel = document.querySelector(".screen-carousel");
+        var scroller = document.getElementById("screen-scroller");
+        if (!carousel || !scroller) return;
+        var slides = Array.prototype.slice.call(scroller.querySelectorAll(".screen-slide"));
+        var dots = Array.prototype.slice.call(carousel.querySelectorAll(".screen-dot"));
+        var desktopMq = window.matchMedia("(min-width: 860px)");
+        var current = 0;
+        var timer = null;
+        var hover = false;
+        var focused = false;
+        var inView = true;
+        var scrollTick = 0;
+        var programmatic = false;
+        var settleTimer = null;
+
+        function setCurrent(index) {
+          current = index;
+          dots.forEach(function (dot, i) {
+            if (i === index) dot.setAttribute("aria-current", "true");
+            else dot.removeAttribute("aria-current");
+          });
+        }
+
+        function nearestIndex() {
+          var left = scroller.scrollLeft;
+          var best = 0;
+          var bestDist = Infinity;
+          slides.forEach(function (slide, i) {
+            var dist = Math.abs(slide.offsetLeft - left);
+            if (dist < bestDist) {
+              bestDist = dist;
+              best = i;
+            }
+          });
+          return best;
+        }
+
+        function goTo(index) {
+          var count = slides.length;
+          index = (index + count) % count;
+          programmatic = true;
+          setCurrent(index);
+          scroller.scrollTo({
+            left: slides[index].offsetLeft,
+            behavior: reduce ? "auto" : "smooth"
+          });
+        }
+
+        function canAuto() {
+          return !reduce && desktopMq.matches && !hover && !focused && !document.hidden && inView;
+        }
+
+        function arm() {
+          clearInterval(timer);
+          timer = null;
+          if (!canAuto()) return;
+          timer = setInterval(function () { goTo(current + 1); }, 5000);
+        }
+
+        carousel.querySelectorAll(".screen-nav").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            goTo(current + Number(btn.getAttribute("data-dir")));
+            arm();
+          });
+        });
+        dots.forEach(function (dot) {
+          dot.addEventListener("click", function () {
+            goTo(Number(dot.getAttribute("data-index")));
+            arm();
+          });
+        });
+        carousel.addEventListener("keydown", function (e) {
+          if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+          e.preventDefault();
+          goTo(current + (e.key === "ArrowRight" ? 1 : -1));
+          arm();
+        });
+        scroller.addEventListener("pointerdown", function () { programmatic = false; });
+        scroller.addEventListener("scroll", function () {
+          clearTimeout(settleTimer);
+          settleTimer = setTimeout(function () {
+            programmatic = false;
+            setCurrent(nearestIndex());
+          }, 160);
+          if (programmatic || scrollTick) return;
+          scrollTick = requestAnimationFrame(function () {
+            scrollTick = 0;
+            if (!programmatic) setCurrent(nearestIndex());
+          });
+        }, { passive: true });
+        carousel.addEventListener("mouseenter", function () { hover = true; arm(); });
+        carousel.addEventListener("mouseleave", function () { hover = false; arm(); });
+        carousel.addEventListener("focusin", function () { focused = true; arm(); });
+        carousel.addEventListener("focusout", function (e) {
+          if (!carousel.contains(e.relatedTarget)) {
+            focused = false;
+            arm();
+          }
+        });
+        document.addEventListener("visibilitychange", arm);
+        if (typeof desktopMq.addEventListener === "function") desktopMq.addEventListener("change", arm);
+        else if (typeof desktopMq.addListener === "function") desktopMq.addListener(arm);
+        if ("IntersectionObserver" in window) {
+          inView = false;
+          var watch = new IntersectionObserver(function (entries) {
+            inView = entries.some(function (entry) { return entry.isIntersecting; });
+            arm();
+          }, { threshold: 0.45 });
+          watch.observe(carousel);
+        }
+        arm();
+      })();
 
       if (reduce) return;
 
