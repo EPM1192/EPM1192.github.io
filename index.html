@@ -671,17 +671,57 @@
     }
     .screen-scroller::-webkit-scrollbar { display: none; }
     .screen-slide {
-      flex: 0 0 78%;
+      flex: 0 0 min(15.5rem, 74%);
       scroll-snap-align: start;
       margin: 0;
+    }
+    .phone {
+      position: relative;
+      padding: 1.05rem 0.42rem 0.48rem;
+      border-radius: 1.7rem;
+      background: linear-gradient(180deg, #fffefc 0%, #fff4ea 100%);
+      border: 1px solid rgba(58, 46, 42, 0.16);
+      box-shadow: 0 16px 34px rgba(58, 46, 42, 0.12);
+    }
+    .phone::before,
+    .phone::after {
+      content: "";
+      position: absolute;
+      width: 3px;
+      border-radius: 2px;
+      background: rgba(58, 46, 42, 0.16);
+    }
+    .phone::before {
+      left: 0;
+      top: 4.4rem;
+      height: 1.35rem;
+    }
+    .phone::after {
+      right: 0;
+      top: 5.1rem;
+      height: 2.15rem;
+    }
+    .phone-island {
+      position: absolute;
+      top: 0.32rem;
+      left: 50%;
+      width: 34%;
+      height: 0.52rem;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #2a2422;
+    }
+    .phone-screen {
+      border-radius: 1.15rem;
+      overflow: hidden;
+      background: #fff;
+      line-height: 0;
     }
     .screen-slide img {
       display: block;
       width: 100%;
       height: auto;
-      border-radius: 1.45rem;
-      background: #fff;
-      box-shadow: 0 16px 36px rgba(58, 46, 42, 0.12);
+      border-radius: 0;
     }
     .screen-slide figcaption {
       margin: 0.7rem 0.15rem 0;
@@ -733,8 +773,9 @@
     @media (min-width: 860px) {
       .scene-grid,
       .steps { grid-template-columns: repeat(3, 1fr); }
-      .screen-slide { flex-basis: 21rem; }
-      .screen-scroller { padding-right: calc(100% - 21rem); }
+      .screen-carousel { max-width: 54rem; margin-inline: auto; }
+      .screen-slide { flex-basis: 16.5rem; }
+      .screen-scroller { padding-right: calc(100% - 16.5rem); }
     }
     @media (hover: hover) {
       .scene-card,
@@ -982,19 +1023,39 @@
       <div class="screen-carousel reveal-step" data-step="3">
         <div class="screen-scroller" id="screen-scroller" tabindex="0" role="region" aria-roledescription="カルーセル" aria-label="アプリの画面。左右のボタンかスワイプで送れます。">
           <figure class="screen-slide">
-            <img src="assets/screens/screen1.webp" width="600" height="1298" alt="会話画面。らぶりんコーチが、風景画と写真の話で接続詞 but の使い方を示している。" decoding="async">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen1.webp" width="600" height="1298" alt="会話画面。らぶりんコーチが、風景画と写真の話で接続詞 but の使い方を示している。" decoding="async">
+              </div>
+            </div>
             <figcaption>らぶりんコーチで、次の英語が身につく</figcaption>
           </figure>
           <figure class="screen-slide">
-            <img src="assets/screens/screen2.webp" width="600" height="1298" alt="文法の振り返り画面。ハムスターのえさの会話で、to feeding を to feed に直している。" decoding="async">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen2.webp" width="600" height="1298" alt="文法の振り返り画面。ハムスターのえさの会話で、to feeding を to feed に直している。" decoding="async">
+              </div>
+            </div>
             <figcaption>to のあとを、feed に直す</figcaption>
           </figure>
           <figure class="screen-slide">
-            <img src="assets/screens/screen3.webp" width="600" height="1298" alt="振り返り画面。語彙、文法、やり取り、発音の点数と、会話の回数や語数が並んでいる。" decoding="async">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen3.webp" width="600" height="1298" alt="振り返り画面。語彙、文法、やり取り、発音の点数と、会話の回数や語数が並んでいる。" decoding="async">
+              </div>
+            </div>
             <figcaption>話したあと 4つの観点で振り返り</figcaption>
           </figure>
           <figure class="screen-slide">
-            <img src="assets/screens/screen4.webp" width="600" height="1298" alt="語彙の振り返り画面。CEFRのレベルごとの語数をタップすると、単語のリストが見られる。" decoding="async">
+            <div class="phone">
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-screen">
+                <img src="assets/screens/screen4.webp" width="600" height="1298" alt="語彙の振り返り画面。CEFRのレベルごとの語数をタップすると、単語のリストが見られる。" decoding="async">
+              </div>
+            </div>
             <figcaption>使った単語を、レベルごとに見る</figcaption>
           </figure>
         </div>
