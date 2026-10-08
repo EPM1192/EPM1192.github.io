@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>らぶりん英会話｜I's factory</title>
-  <meta name="description" content="英語学習アプリ「らぶりん英会話」の開発元 I's factory。話して、振り返る。">
+  <meta name="description" content="話して、振り返る。詰まった一言が、次に言える英語になる。">
   <link rel="canonical" href="https://epm1192.github.io/">
   <meta property="og:title" content="らぶりん英会話｜I's factory">
-  <meta property="og:description" content="話して、振り返る。らぶりん英会話の開発元です。">
+  <meta property="og:description" content="話して、振り返る。詰まった一言が、次に言える英語になる。">
   <meta property="og:url" content="https://epm1192.github.io/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ja_JP">
@@ -31,6 +31,8 @@
       --line: rgba(58, 46, 42, 0.12);
       --wing: #a8e0f0;
       --header-h: 4.5rem;
+      --link: #9d2156;
+      --ink-soft: #5c463f;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -44,8 +46,39 @@
       background: var(--cream);
       overflow-x: hidden;
     }
-    a { color: var(--heart-deep); text-underline-offset: 0.2em; }
+    a { color: var(--link); text-underline-offset: 0.2em; }
     a:hover { color: var(--ink); }
+    :focus-visible {
+      outline: 3px solid var(--link);
+      outline-offset: 3px;
+    }
+    .skip {
+      position: absolute;
+      left: 0.6rem;
+      top: 0.6rem;
+      z-index: 200;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: none;
+      transform: translateY(-160%);
+    }
+    .skip:focus {
+      transform: none;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     /* Scroll progress */
     .scroll-progress {
@@ -195,11 +228,11 @@
       font-size: 0.82rem;
     }
     .site-header nav a {
-      color: var(--muted);
+      color: var(--ink-soft);
       text-decoration: none;
       font-weight: 700;
     }
-    .site-header nav a:hover { color: var(--heart-deep); }
+    .site-header nav a:hover { color: var(--link); }
 
     .hero {
       position: relative;
@@ -278,10 +311,10 @@
     }
     .hero-copy .lede {
       margin: 0;
-      max-width: 22rem;
-      color: var(--muted);
-      font-size: 1.02rem;
-      line-height: 1.7;
+      max-width: 26rem;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      line-height: 1.85;
     }
     .cta-row {
       display: flex;
@@ -320,17 +353,17 @@
     .btn:hover { transform: translateY(-2px); }
     .btn-primary {
       color: #fff;
-      background: linear-gradient(135deg, var(--heart) 0%, var(--heart-deep) 100%);
-      box-shadow: 0 10px 24px rgba(232, 78, 134, 0.28);
+      background: linear-gradient(135deg, #c73d74 0%, #a61d58 100%);
+      box-shadow: 0 10px 24px rgba(166, 29, 88, 0.28);
       border: 2px solid transparent;
     }
     .btn-primary:hover {
-      box-shadow: 0 14px 28px rgba(232, 78, 134, 0.38);
+      box-shadow: 0 14px 28px rgba(166, 29, 88, 0.34);
     }
     .btn-ghost {
       color: var(--ink);
-      background: rgba(255, 255, 255, 0.55);
-      border: 2px solid rgba(58, 46, 42, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid rgba(58, 46, 42, 0.16);
       backdrop-filter: blur(6px);
     }
     .btn-ghost:hover {
@@ -493,9 +526,214 @@
       gap: 0.4rem 1.4rem;
       margin: 0 0 1rem;
     }
-    footer a { color: var(--muted); text-decoration: none; font-weight: 700; }
-    footer a:hover { color: var(--heart-deep); }
+    footer a { color: var(--ink-soft); text-decoration: none; font-weight: 700; }
+    footer a:hover { color: var(--link); }
     footer p { margin: 0.2rem 0; }
+
+    .panel-wide {
+      width: min(68rem, calc(100% - 2.4rem));
+    }
+    .section-lead {
+      margin: 0;
+      max-width: 36rem;
+      color: var(--ink-soft);
+    }
+    .scene-grid,
+    .steps,
+    .screen-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 1.35rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .scene-card,
+    .step {
+      margin: 0;
+      padding: 1.15rem 1.15rem 1.2rem;
+      border-radius: 1.4rem;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(58, 46, 42, 0.08);
+      box-shadow: 0 10px 28px rgba(58, 46, 42, 0.05);
+    }
+    .scene-card {
+      display: flex;
+      flex-direction: column;
+    }
+    .scene-card .scene-kicker {
+      margin: 0;
+      color: var(--link);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .scene-card h3,
+    .step h3 {
+      margin: 0.4rem 0 0;
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+    .scene-card p,
+    .step p {
+      margin: 0.7rem 0 0;
+    }
+    .scene-card > p:not(.scene-kicker) {
+      flex: 1 1 auto;
+    }
+    .lovu-say {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-top: 1rem;
+      padding: 0.85rem 0.9rem 0.9rem;
+      border-radius: 1.15rem;
+      background: rgba(255, 182, 208, 0.34);
+    }
+    .lovu-say img {
+      width: 2.75rem;
+      height: 2.75rem;
+      object-fit: contain;
+      flex: none;
+    }
+    .lovu-say p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .lovu-name {
+      display: block;
+      margin-bottom: 0.15rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--link);
+    }
+    .eiken-note {
+      max-width: 46rem;
+    }
+    .band {
+      margin-top: 4rem;
+      padding: 3.2rem 0 3.5rem;
+      background:
+        linear-gradient(90deg, rgba(159, 214, 240, 0.32), rgba(255, 182, 208, 0.24), rgba(255, 226, 200, 0.42));
+      border-block: 1px solid var(--line);
+    }
+    .band .panel { padding-top: 0; }
+    .steps { counter-reset: step; }
+    .step { position: relative; }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      background: var(--peach);
+      color: var(--ink);
+      font-family: "Mochiy Pop One", sans-serif;
+      font-size: 0.95rem;
+    }
+    .step:nth-child(1) .step-num { background: #b7e3f6; }
+    .step:nth-child(2) .step-num { background: #ffc4da; }
+    .step:nth-child(3) .step-num { background: #ffe2c8; }
+    .screen-grid { justify-items: center; }
+    .phone {
+      width: min(100%, 16rem);
+      margin: 0;
+      text-align: center;
+    }
+    .phone-shell {
+      padding: 0.55rem 0.65rem 0.75rem;
+      border-radius: 2rem;
+      background: linear-gradient(180deg, #fff, #fff4ea);
+      border: 1px solid rgba(58, 46, 42, 0.12);
+      box-shadow: 0 16px 36px rgba(58, 46, 42, 0.08);
+    }
+    .phone-shell::before {
+      content: "";
+      display: block;
+      width: 4rem;
+      height: 0.32rem;
+      margin: 0.2rem auto 0.45rem;
+      border-radius: 999px;
+      background: rgba(58, 46, 42, 0.18);
+    }
+    .phone-screen {
+      position: relative;
+      aspect-ratio: 9 / 19;
+      overflow: hidden;
+      border-radius: 1.35rem;
+      border: 1.5px dashed rgba(92, 70, 63, 0.5);
+      background:
+        radial-gradient(circle at 18% 16%, rgba(159, 214, 240, 0.65), transparent 42%),
+        radial-gradient(circle at 82% 28%, rgba(255, 182, 208, 0.55), transparent 40%),
+        radial-gradient(circle at 48% 92%, rgba(255, 226, 200, 0.9), transparent 48%),
+        var(--cream);
+    }
+    .phone-shot {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .phone.is-ready .phone-shot { display: block; }
+    .phone.is-ready .phone-screen {
+      border-style: solid;
+      border-color: transparent;
+      background: #241c1a;
+    }
+    .phone-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .phone.is-ready .phone-fallback { display: none; }
+    .phone-fallback strong {
+      font-family: "Mochiy Pop One", sans-serif;
+      font-weight: 400;
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+    .phone-fallback span {
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    .phone figcaption {
+      margin-top: 0.75rem;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .phone-pending {
+      font-weight: 500;
+    }
+    .phone.is-ready .phone-pending { display: none; }
+    @media (min-width: 860px) {
+      .scene-grid,
+      .steps,
+      .screen-grid { grid-template-columns: repeat(3, 1fr); }
+      .screen-grid { align-items: start; }
+    }
+    @media (hover: hover) {
+      .scene-card,
+      .step { transition: transform 0.2s ease; }
+      .scene-card:hover,
+      .step:hover { transform: translateY(-3px); }
+    }
 
     @keyframes floaty {
       0%, 100% { transform: translateY(0) rotate(-1deg); }
@@ -552,7 +790,25 @@
         min-height: 42vh;
       }
       .hero-mascot img { width: min(78%, 20rem); }
-      .site-header nav { gap: 0.85rem; font-size: 0.75rem; }
+      .site-header nav { gap: 0.35rem 0.85rem; font-size: 0.78rem; }
+      :root { --header-h: 7.6rem; }
+      .site-header {
+        flex-wrap: wrap;
+        row-gap: 0.35rem;
+      }
+      .site-header nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .site-header nav a { padding: 0.35rem 0.15rem; }
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 28rem;
+        margin-inline: auto;
+      }
+      .btn { width: 100%; max-width: none; padding-inline: 0.8rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -571,11 +827,15 @@
       }
       .hero-copy, .hero-mascot { animation: none; }
       .logo-mark:hover { transform: none; }
-      .btn:hover { transform: none; }
+      .btn:hover,
+      .scene-card:hover,
+      .step:hover { transform: none; }
     }
   </style>
 </head>
 <body>
+  <a class="skip" href="#main">本文へスキップ</a>
+  <noscript><style>.reveal-step{opacity:1;transform:none}</style></noscript>
   <div class="scroll-progress" aria-hidden="true">
     <div class="scroll-progress__bar"></div>
     <div class="scroll-progress__dot"></div>
@@ -593,10 +853,12 @@
         <span class="logo-sub">by I's factory</span>
       </div>
     </a>
-    <nav>
-      <a href="#app">App</a>
-      <a href="#about">Studio</a>
-      <a href="#support">Support</a>
+    <nav aria-label="ページ内">
+      <a href="#moments">こんな時に</a>
+      <a href="#howto">使い方</a>
+      <a href="#screens">画面</a>
+      <a href="#about">スタジオ</a>
+      <a href="#support">サポート</a>
     </nav>
   </header>
 
@@ -611,18 +873,19 @@
     <div class="hero-stage">
       <div class="hero-copy">
         <h1 class="brand-hero">らぶりん英会話</h1>
-        <p class="lede">話して、振り返る。<br>英語学習アプリの開発元です。</p>
+        <p class="lede">話して、振り返る。<br>詰まった一言が、次に言える英語になる。</p>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6792189779">App Store で見る</a>
           <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play で見る</a>
           <a class="btn btn-ghost" href="https://note.com/lovelin_english">note を読む</a>
+          <a class="btn btn-ghost" href="https://x.com/loverin_eikaiwa">X（@loverin_eikaiwa）</a>
         </div>
       </div>
       <div class="hero-mascot" id="mascot">
         <div class="mascot-orb" aria-hidden="true"></div>
         <div class="wing-glow" aria-hidden="true"></div>
         <div class="mascot-tilt">
-          <img src="assets/lovulin.png" width="753" height="722" alt="らぶりん">
+          <img src="assets/lovulin.png" width="753" height="722" alt="青い翼と虹色のつの、ピンクのハートをつけた猫のキャラクター、らぶりん">
         </div>
       </div>
     </div>
@@ -639,9 +902,112 @@
     </div>
   </section>
 
-  <main>
-    <section class="panel reveal-group" id="app">
-      <h2 class="reveal-step" data-step="1">アプリのこと</h2>
+  <main id="main">
+    <section class="panel panel-wide reveal-group" id="moments" aria-labelledby="moments-title">
+      <h2 class="reveal-step" id="moments-title" data-step="1">こんな時に</h2>
+      <p class="section-lead reveal-step" data-step="2">話す直前で、言葉が一つだけ止まること、ありますよね。</p>
+      <div class="scene-grid">
+        <article class="scene-card reveal-step" data-step="3">
+          <p class="scene-kicker">お店で</p>
+          <h3>「<span lang="en">smaller</span>」しか出てこない</h3>
+          <p>店員さん役のAIに「もう少し小さいサイズありますか？」と言いたいのに「<span lang="en">smaller</span>」しか出ない。</p>
+          <div class="lovu-say">
+            <img src="assets/lovulin.png" width="96" height="92" alt="" decoding="async">
+            <p><span class="lovu-name">らぶりん</span>止まった一言だけ一緒に見直そ。次はそこから言えるよ</p>
+          </div>
+        </article>
+        <article class="scene-card reveal-step" data-step="4" aria-describedby="eiken-note">
+          <p class="scene-kicker">面接の練習</p>
+          <h3>理由を聞かれて、固まる</h3>
+          <p>英検®の面接練習で「<span lang="en">Why do you think so?</span>」と聞かれて、固まる。</p>
+          <div class="lovu-say">
+            <img src="assets/lovulin.png" width="96" height="92" alt="" decoding="async">
+            <p><span class="lovu-name">らぶりん</span>理由は1つでいいよ！</p>
+          </div>
+        </article>
+        <article class="scene-card reveal-step" data-step="5">
+          <p class="scene-kicker">好きなキャラと</p>
+          <h3>「<span lang="en">Yes…</span>」しか言えない</h3>
+          <p>好きなキャラと英語で話せるのに、緊張して「<span lang="en">Yes…</span>」しか言えない。</p>
+          <div class="lovu-say">
+            <img src="assets/lovulin.png" width="96" height="92" alt="" decoding="async">
+            <p><span class="lovu-name">らぶりん</span>そこが次に覚える英語だよ</p>
+          </div>
+        </article>
+      </div>
+      <p class="fine eiken-note reveal-step" id="eiken-note" data-step="5">英検®は公益財団法人 日本英語検定協会の登録商標です。本アプリは同協会および文部科学省の公認・推薦を受けたものではありません。</p>
+    </section>
+
+    <section class="band" id="howto" aria-labelledby="howto-title">
+      <div class="panel panel-wide reveal-group">
+        <h2 class="reveal-step" id="howto-title" data-step="1">使い方</h2>
+        <p class="section-lead reveal-step" data-step="2">話す、振り返る、もう一回。この三つです。</p>
+        <ol class="steps">
+          <li class="step reveal-step" data-step="3">
+            <span class="step-num" aria-hidden="true">1</span>
+            <h3>話す</h3>
+            <p>テーマや場面を選んで、AIと英語で話します。声でも入力できます。</p>
+          </li>
+          <li class="step reveal-step" data-step="4">
+            <span class="step-num" aria-hidden="true">2</span>
+            <h3>振り返る</h3>
+            <p>話し終えたら、語彙・文法・やり取り・発音を見返せます。</p>
+          </li>
+          <li class="step reveal-step" data-step="5">
+            <span class="step-num" aria-hidden="true">3</span>
+            <h3>もう一回</h3>
+            <p>振り返ったあと、もう一度話せます。ホームの「今日のおすすめ」から、次に練習することも選べます。</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="panel panel-wide reveal-group" id="screens" aria-labelledby="screens-title">
+      <h2 class="reveal-step" id="screens-title" data-step="1">アプリの画面</h2>
+      <p class="section-lead reveal-step" data-step="2">実際の画面は、これからここに並べます。いまは枠だけです。</p>
+      <div class="screen-grid">
+        <!-- Swap-in files: assets/screens/screen1.png, screen2.png, screen3.png -->
+        <figure class="phone reveal-step" data-step="3">
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <img class="phone-shot" src="assets/screens/screen1.png" alt="" width="390" height="844" decoding="async">
+              <div class="phone-fallback">
+                <strong>準備中</strong>
+                <span>実際の画面ではありません</span>
+              </div>
+            </div>
+          </div>
+          <figcaption>画面 1<span class="phone-pending"> · プレースホルダー</span></figcaption>
+        </figure>
+        <figure class="phone reveal-step" data-step="4">
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <img class="phone-shot" src="assets/screens/screen2.png" alt="" width="390" height="844" decoding="async">
+              <div class="phone-fallback">
+                <strong>準備中</strong>
+                <span>実際の画面ではありません</span>
+              </div>
+            </div>
+          </div>
+          <figcaption>画面 2<span class="phone-pending"> · プレースホルダー</span></figcaption>
+        </figure>
+        <figure class="phone reveal-step" data-step="5">
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <img class="phone-shot" src="assets/screens/screen3.png" alt="" width="390" height="844" decoding="async">
+              <div class="phone-fallback">
+                <strong>準備中</strong>
+                <span>実際の画面ではありません</span>
+              </div>
+            </div>
+          </div>
+          <figcaption>画面 3<span class="phone-pending"> · プレースホルダー</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="panel reveal-group" id="app" aria-labelledby="app-title">
+      <h2 class="reveal-step" id="app-title" data-step="1">アプリのこと</h2>
       <p class="reveal-step" data-step="2">英語を話して終わりにしない人向けの、会話と振り返りのアプリです。</p>
       <p class="quiet reveal-step" data-step="3">日本の App Store と Google Play で公開しています。</p>
       <p class="fine reveal-step" data-step="4">一部の機能は広告・チケットで追加できます。ログインして別の端末へ引き継ぐ機能や、サブスクはありません。米国ストアでは配信していません。</p>
@@ -658,10 +1024,10 @@
       </div>
     </div>
 
-    <section class="panel reveal-group" id="about">
-      <h2 class="reveal-step" data-step="1">つくっているところ</h2>
+    <section class="panel reveal-group" id="about" aria-labelledby="about-title">
+      <h2 class="reveal-step" id="about-title" data-step="1">つくっているところ</h2>
       <p class="reveal-step" data-step="2">I's factory。少人数で、日本からつくっています。</p>
-      <p class="quiet reveal-step" data-step="3">長い話は <a href="https://note.com/lovelin_english">note「らぶりん」</a> に置いています。</p>
+      <p class="quiet reveal-step" data-step="3">長い話は <a href="https://note.com/lovelin_english">note「らぶりん」</a> に置いています。<a href="https://x.com/loverin_eikaiwa">X（@loverin_eikaiwa）</a> もあります。</p>
     </section>
   </main>
 
@@ -670,6 +1036,8 @@
       <div class="foot-links">
         <a href="https://different-bearberry-4e5.notion.site/3a165e25d0fc8012b317c79485ae2e69">プライバシーポリシー</a>
         <a href="mailto:isfactoryforgmail@gmail.com">サポート</a>
+        <a href="https://note.com/lovelin_english">note</a>
+        <a href="https://x.com/loverin_eikaiwa">X（@loverin_eikaiwa）</a>
         <a href="https://apps.apple.com/jp/app/id6792189779">App Store</a>
         <a href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play</a>
       </div>
@@ -751,6 +1119,19 @@
           n.classList.add("in");
         });
       }
+
+      document.querySelectorAll(".phone").forEach(function (phone) {
+        var img = phone.querySelector(".phone-shot");
+        if (!img) return;
+        function ready() {
+          if (img.naturalWidth > 0) {
+            img.alt = "らぶりん英会話のアプリ画面";
+            phone.classList.add("is-ready");
+          }
+        }
+        img.addEventListener("load", ready);
+        if (img.complete) ready();
+      });
 
       if (reduce) return;
 
