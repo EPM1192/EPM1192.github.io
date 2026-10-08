@@ -379,6 +379,35 @@
       border-color: var(--heart);
       box-shadow: 0 10px 22px rgba(255, 107, 157, 0.22);
     }
+    .play-offer {
+      position: relative;
+      display: inline-flex;
+    }
+    .play-offer > .btn { width: 100%; }
+    .soon {
+      display: inline-block;
+      padding: 0.06rem 0.42rem 0.08rem;
+      border-radius: 999px;
+      background: #fff7f0;
+      color: #9d2156;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+    .play-offer > .soon {
+      position: absolute;
+      z-index: 2;
+      top: -0.55rem;
+      right: 0.7rem;
+      box-shadow: 0 2px 8px rgba(58, 46, 42, 0.14);
+    }
+    .foot-links .soon {
+      margin-left: 0.28rem;
+      background: #fff;
+      border: 1px solid rgba(157, 33, 86, 0.28);
+    }
 
     .hero-mascot {
       position: relative;
@@ -939,7 +968,7 @@
         <p class="lede">말하고, 되돌아본다.<br>막혔던 한마디가, 다음에는 말할 수 있는 영어가 된다.</p>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6792189779">App Store에서 보기</a>
-          <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play에서 보기</a>
+          <span class="play-offer"><a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play에서 보기</a><span class="soon">준비 중</span></span>
           <a class="btn btn-ghost" href="https://note.com/lovelin_english">note 읽기 · 일본어</a>
           <a class="btn btn-ghost" href="https://x.com/loverin_eikaiwa">X @loverin_eikaiwa · 일본어</a>
         </div>
@@ -1091,11 +1120,12 @@
     <section class="panel reveal-group" id="app" aria-labelledby="app-title">
       <h2 class="reveal-step" id="app-title" data-step="1">앱 소개</h2>
       <p class="reveal-step" data-step="2">영어로 말하고 끝내지 않는 사람을 위한, 대화와 되돌아보기의 앱이에요.</p>
-      <p class="quiet reveal-step" data-step="3">일본 App Store와 Google Play에서 제공하고 있습니다.</p>
+      <!-- 한국이 Google Play에 추가되면, 각 「준비 중」 라벨을 지우고 이 문장을 「App Store와 Google Play에서 제공 중입니다.」로 바꾸세요. -->
+      <p class="quiet reveal-step" data-step="3">App Store에서 제공 중입니다. (Google Play는 준비 중)</p>
       <p class="fine reveal-step" data-step="4">일부 기능은 광고 시청이나 티켓으로 추가 이용할 수 있습니다. 로그인하여 다른 기기로 데이터를 이전하는 기능이나 구독 서비스는 없습니다. 미국 스토어에서는 제공하지 않습니다.</p>
       <div class="cta-row reveal-step" data-step="5">
         <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6792189779">App Store</a>
-        <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play</a>
+        <span class="play-offer"><a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play</a><span class="soon">준비 중</span></span>
       </div>
     </section>
 
@@ -1121,7 +1151,7 @@
         <a href="https://note.com/lovelin_english">note (일본어)</a>
         <a href="https://x.com/loverin_eikaiwa">X(@loverin_eikaiwa, 일본어)</a>
         <a href="https://apps.apple.com/jp/app/id6792189779">App Store</a>
-        <a href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play</a>
+        <a href="https://play.google.com/store/apps/details?id=com.isfactory.englishapp">Google Play<span class="soon">준비 중</span></a>
       </div>
       <p>isfactoryforgmail@gmail.com</p>
       <p>© I's factory</p>
