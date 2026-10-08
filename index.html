@@ -554,8 +554,7 @@
       color: var(--ink-soft);
     }
     .scene-grid,
-    .steps,
-    .screen-grid {
+    .steps {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
@@ -656,92 +655,86 @@
     .step:nth-child(1) .step-num { background: #b7e3f6; }
     .step:nth-child(2) .step-num { background: #ffc4da; }
     .step:nth-child(3) .step-num { background: #ffe2c8; }
-    .screen-grid { justify-items: center; }
-    .phone {
-      width: min(100%, 16rem);
-      margin: 0;
-      text-align: center;
-    }
-    .phone-shell {
-      padding: 0.55rem 0.65rem 0.75rem;
-      border-radius: 2rem;
-      background: linear-gradient(180deg, #fff, #fff4ea);
-      border: 1px solid rgba(58, 46, 42, 0.12);
-      box-shadow: 0 16px 36px rgba(58, 46, 42, 0.08);
-    }
-    .phone-shell::before {
-      content: "";
-      display: block;
-      width: 4rem;
-      height: 0.32rem;
-      margin: 0.2rem auto 0.45rem;
-      border-radius: 999px;
-      background: rgba(58, 46, 42, 0.18);
-    }
-    .phone-screen {
+    .screen-carousel { margin-top: 1.35rem; }
+    .screen-scroller {
       position: relative;
-      aspect-ratio: 9 / 19;
-      overflow: hidden;
-      border-radius: 1.35rem;
-      border: 1.5px dashed rgba(92, 70, 63, 0.5);
-      background:
-        radial-gradient(circle at 18% 16%, rgba(159, 214, 240, 0.65), transparent 42%),
-        radial-gradient(circle at 82% 28%, rgba(255, 182, 208, 0.55), transparent 40%),
-        radial-gradient(circle at 48% 92%, rgba(255, 226, 200, 0.9), transparent 48%),
-        var(--cream);
-    }
-    .phone-shot {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-    .phone.is-ready .phone-shot { display: block; }
-    .phone.is-ready .phone-screen {
-      border-style: solid;
-      border-color: transparent;
-      background: #241c1a;
-    }
-    .phone-fallback {
-      position: absolute;
-      inset: 0;
       display: flex;
-      flex-direction: column;
+      gap: 0.9rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scroll-padding-inline: 0.15rem;
+      overscroll-behavior-x: contain;
+      padding: 0.35rem 0.15rem 0.85rem;
+      margin: 0;
+      scrollbar-width: none;
+    }
+    .screen-scroller::-webkit-scrollbar { display: none; }
+    .screen-slide {
+      flex: 0 0 78%;
+      scroll-snap-align: start;
+      margin: 0;
+    }
+    .screen-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 1.45rem;
+      background: #fff;
+      box-shadow: 0 16px 36px rgba(58, 46, 42, 0.12);
+    }
+    .screen-slide figcaption {
+      margin: 0.7rem 0.15rem 0;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+    .screen-controls {
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.45rem;
-      padding: 1.2rem;
-      text-align: center;
+      gap: 0.85rem;
+      margin-top: 0.15rem;
     }
-    .phone.is-ready .phone-fallback { display: none; }
-    .phone-fallback strong {
-      font-family: "Mochiy Pop One", sans-serif;
-      font-weight: 400;
-      font-size: 1.05rem;
+    .screen-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(58, 46, 42, 0.18);
+      background: #fff;
       color: var(--ink);
+      cursor: pointer;
     }
-    .phone-fallback span {
-      color: var(--ink-soft);
-      font-size: 0.82rem;
-      line-height: 1.6;
+    .screen-nav:hover { border-color: var(--link); color: var(--link); }
+    .screen-nav svg { display: block; }
+    .screen-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
     }
-    .phone figcaption {
-      margin-top: 0.75rem;
-      color: var(--ink-soft);
-      font-size: 0.88rem;
-      font-weight: 700;
+    .screen-dot {
+      width: 0.7rem;
+      height: 0.7rem;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: #8d756c;
+      cursor: pointer;
     }
-    .phone-pending {
-      font-weight: 500;
+    .screen-dot[aria-current="true"] {
+      width: 1.65rem;
+      background: var(--link);
     }
-    .phone.is-ready .phone-pending { display: none; }
     @media (min-width: 860px) {
       .scene-grid,
-      .steps,
-      .screen-grid { grid-template-columns: repeat(3, 1fr); }
-      .screen-grid { align-items: start; }
+      .steps { grid-template-columns: repeat(3, 1fr); }
+      .screen-slide { flex-basis: 21rem; }
+      .screen-scroller { padding-right: calc(100% - 21rem); }
     }
     @media (hover: hover) {
       .scene-card,
@@ -846,6 +839,7 @@
         transition: none;
       }
       .hero-copy, .hero-mascot { animation: none; }
+      .screen-scroller { scroll-behavior: auto; }
       .logo-mark:hover { transform: none; }
       .btn:hover,
       .scene-card:hover,
@@ -984,45 +978,44 @@
 
     <section class="panel panel-wide reveal-group" id="screens" aria-labelledby="screens-title">
       <h2 class="reveal-step" id="screens-title" data-step="1">アプリの画面</h2>
-      <p class="section-lead reveal-step" data-step="2">実際の画面は、これからここに並べます。いまは枠だけです。</p>
-      <div class="screen-grid">
-        <!-- Swap-in files: assets/screens/screen1.png, screen2.png, screen3.png -->
-        <figure class="phone reveal-step" data-step="3">
-          <div class="phone-shell">
-            <div class="phone-screen">
-              <img class="phone-shot" src="assets/screens/screen1.png" alt="" width="390" height="844" decoding="async">
-              <div class="phone-fallback">
-                <strong>準備中</strong>
-                <span>実際の画面ではありません</span>
-              </div>
-            </div>
+      <p class="section-lead reveal-step" data-step="2">会話の画面と、話したあとの振り返りです。</p>
+      <div class="screen-carousel reveal-step" data-step="3">
+        <div class="screen-scroller" id="screen-scroller" tabindex="0" role="region" aria-roledescription="カルーセル" aria-label="アプリの画面。左右のボタンかスワイプで送れます。">
+          <figure class="screen-slide">
+            <img src="assets/screens/screen1.webp" width="600" height="1298" alt="会話画面。らぶりんコーチが、風景画と写真の話で接続詞 but の使い方を示している。" decoding="async">
+            <figcaption>らぶりんコーチで、次の英語が身につく</figcaption>
+          </figure>
+          <figure class="screen-slide">
+            <img src="assets/screens/screen2.webp" width="600" height="1298" alt="文法の振り返り画面。ハムスターのえさの会話で、to feeding を to feed に直している。" decoding="async">
+            <figcaption>to のあとを、feed に直す</figcaption>
+          </figure>
+          <figure class="screen-slide">
+            <img src="assets/screens/screen3.webp" width="600" height="1298" alt="振り返り画面。語彙、文法、やり取り、発音の点数と、会話の回数や語数が並んでいる。" decoding="async">
+            <figcaption>話したあと 4つの観点で振り返り</figcaption>
+          </figure>
+          <figure class="screen-slide">
+            <img src="assets/screens/screen4.webp" width="600" height="1298" alt="語彙の振り返り画面。CEFRのレベルごとの語数をタップすると、単語のリストが見られる。" decoding="async">
+            <figcaption>使った単語を、レベルごとに見る</figcaption>
+          </figure>
+        </div>
+        <div class="screen-controls">
+          <button type="button" class="screen-nav" data-dir="-1" aria-label="前の画面">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M11.2 3.6 6.2 9l5 5.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <div class="screen-dots">
+            <button type="button" class="screen-dot" data-index="0" aria-label="1枚目：らぶりんコーチで、次の英語が身につく" aria-current="true"></button>
+            <button type="button" class="screen-dot" data-index="1" aria-label="2枚目：to のあとを、feed に直す"></button>
+            <button type="button" class="screen-dot" data-index="2" aria-label="3枚目：話したあと 4つの観点で振り返り"></button>
+            <button type="button" class="screen-dot" data-index="3" aria-label="4枚目：使った単語を、レベルごとに見る"></button>
           </div>
-          <figcaption>画面 1<span class="phone-pending"> · プレースホルダー</span></figcaption>
-        </figure>
-        <figure class="phone reveal-step" data-step="4">
-          <div class="phone-shell">
-            <div class="phone-screen">
-              <img class="phone-shot" src="assets/screens/screen2.png" alt="" width="390" height="844" decoding="async">
-              <div class="phone-fallback">
-                <strong>準備中</strong>
-                <span>実際の画面ではありません</span>
-              </div>
-            </div>
-          </div>
-          <figcaption>画面 2<span class="phone-pending"> · プレースホルダー</span></figcaption>
-        </figure>
-        <figure class="phone reveal-step" data-step="5">
-          <div class="phone-shell">
-            <div class="phone-screen">
-              <img class="phone-shot" src="assets/screens/screen3.png" alt="" width="390" height="844" decoding="async">
-              <div class="phone-fallback">
-                <strong>準備中</strong>
-                <span>実際の画面ではありません</span>
-              </div>
-            </div>
-          </div>
-          <figcaption>画面 3<span class="phone-pending"> · プレースホルダー</span></figcaption>
-        </figure>
+          <button type="button" class="screen-nav" data-dir="1" aria-label="次の画面">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M6.8 3.6 11.8 9l-5 5.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1140,18 +1133,119 @@
         });
       }
 
-      document.querySelectorAll(".phone").forEach(function (phone) {
-        var img = phone.querySelector(".phone-shot");
-        if (!img) return;
-        function ready() {
-          if (img.naturalWidth > 0) {
-            img.alt = "らぶりん英会話のアプリ画面";
-            phone.classList.add("is-ready");
-          }
+      (function initScreens() {
+        var carousel = document.querySelector(".screen-carousel");
+        var scroller = document.getElementById("screen-scroller");
+        if (!carousel || !scroller) return;
+        var slides = Array.prototype.slice.call(scroller.querySelectorAll(".screen-slide"));
+        var dots = Array.prototype.slice.call(carousel.querySelectorAll(".screen-dot"));
+        var desktopMq = window.matchMedia("(min-width: 860px)");
+        var current = 0;
+        var timer = null;
+        var hover = false;
+        var focused = false;
+        var inView = true;
+        var scrollTick = 0;
+        var programmatic = false;
+        var settleTimer = null;
+
+        function setCurrent(index) {
+          current = index;
+          dots.forEach(function (dot, i) {
+            if (i === index) dot.setAttribute("aria-current", "true");
+            else dot.removeAttribute("aria-current");
+          });
         }
-        img.addEventListener("load", ready);
-        if (img.complete) ready();
-      });
+
+        function nearestIndex() {
+          var left = scroller.scrollLeft;
+          var best = 0;
+          var bestDist = Infinity;
+          slides.forEach(function (slide, i) {
+            var dist = Math.abs(slide.offsetLeft - left);
+            if (dist < bestDist) {
+              bestDist = dist;
+              best = i;
+            }
+          });
+          return best;
+        }
+
+        function goTo(index) {
+          var count = slides.length;
+          index = (index + count) % count;
+          programmatic = true;
+          setCurrent(index);
+          scroller.scrollTo({
+            left: slides[index].offsetLeft,
+            behavior: reduce ? "auto" : "smooth"
+          });
+        }
+
+        function canAuto() {
+          return !reduce && desktopMq.matches && !hover && !focused && !document.hidden && inView;
+        }
+
+        function arm() {
+          clearInterval(timer);
+          timer = null;
+          if (!canAuto()) return;
+          timer = setInterval(function () { goTo(current + 1); }, 5000);
+        }
+
+        carousel.querySelectorAll(".screen-nav").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            goTo(current + Number(btn.getAttribute("data-dir")));
+            arm();
+          });
+        });
+        dots.forEach(function (dot) {
+          dot.addEventListener("click", function () {
+            goTo(Number(dot.getAttribute("data-index")));
+            arm();
+          });
+        });
+        carousel.addEventListener("keydown", function (e) {
+          if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+          e.preventDefault();
+          goTo(current + (e.key === "ArrowRight" ? 1 : -1));
+          arm();
+        });
+        scroller.addEventListener("pointerdown", function () { programmatic = false; });
+        scroller.addEventListener("scroll", function () {
+          clearTimeout(settleTimer);
+          settleTimer = setTimeout(function () {
+            programmatic = false;
+            setCurrent(nearestIndex());
+          }, 160);
+          if (programmatic || scrollTick) return;
+          scrollTick = requestAnimationFrame(function () {
+            scrollTick = 0;
+            if (!programmatic) setCurrent(nearestIndex());
+          });
+        }, { passive: true });
+        carousel.addEventListener("mouseenter", function () { hover = true; arm(); });
+        carousel.addEventListener("mouseleave", function () { hover = false; arm(); });
+        carousel.addEventListener("focusin", function () { focused = true; arm(); });
+        carousel.addEventListener("focusout", function (e) {
+          if (!carousel.contains(e.relatedTarget)) {
+            focused = false;
+            arm();
+          }
+        });
+        document.addEventListener("visibilitychange", arm);
+        if (typeof desktopMq.addEventListener === "function") desktopMq.addEventListener("change", arm);
+        else if (typeof desktopMq.addListener === "function") desktopMq.addListener(arm);
+        if ("IntersectionObserver" in window) {
+          inView = false;
+          var watch = new IntersectionObserver(function (entries) {
+            inView = entries.some(function (entry) { return entry.isIntersecting; });
+            arm();
+          }, { threshold: 0.45 });
+          watch.observe(carousel);
+        }
+        arm();
+      })();
 
       if (reduce) return;
 
