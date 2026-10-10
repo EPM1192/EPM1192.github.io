@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ブロッコリースーパースプラウトを1週間観察するメモ。育て方と、らぶりん英会話の毎日フレーズ。">
+  <meta name="theme-color" content="#8ed45a">
+  <meta name="color-scheme" content="light">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>ブロッコリースーパースプラウト観察メモ | らぶりん英会話</title>
+  <!--
+    QRカードの着地ページ。公開URLは /sprout/ （GitHub Pages では
+    https://epm1192.github.io/sprout/ ）。画像・CSS・JS は相対パス。
+    firebase.json に /sprout から /sprout/ への redirect は置かない。
+    Hosting の glob は末尾スラッシュを無視するので、その 301 は
+    /sprout/ 自身にも当たって無限ループになる。
+    sprout/index.html があるとき、Hosting 既定の挙動で /sprout だけ
+    1回 /sprout/ へ 301 する。trailingSlash はサイト全体には付けない。
+    外部計測タグは入れない。
+  -->
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch.png">
+  <link rel="preload" href="fonts/mplus-rounded-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/loverin.webp" as="image">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">本文へスキップ</a>
+
+  <p class="prep-note no-print" role="note">このページは準備中です。機能やデザインは変わることがあります。</p>
+
+  <nav class="toc" aria-label="ページ内の移動">
+    <a href="#sheet">観察シート</a>
+    <a href="#howto">育て方</a>
+    <a href="#safety">こまったとき</a>
+    <a href="#phrases">毎日フレーズ</a>
+    <a href="#app">アプリ</a>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-card">
+      <p class="brand"><span aria-hidden="true">♥</span> らぶりん英会話</p>
+      <h1>
+        <span class="h1-kicker"><span aria-hidden="true">🥦</span> 1週間で育つ！</span>
+        <span class="h1-main">ブロッコリースーパースプラウト</span>
+        <span class="h1-sub">観察メモ</span>
+      </h1>
+      <p class="lead">キットのカードから来てくれてありがとう。芽の長さや色を、7日分メモできるよ。</p>
+      <p class="summer-badge">夏休みの自由研究にも使えるよ！写真つきレポートを印刷して、そのまま提出できるよ。</p>
+      <figure class="hero-figure">
+        <figcaption class="bubble">
+          <span class="en" lang="en">Let's grow!</span>
+          <span class="ja">一緒に育てよう！</span>
+        </figcaption>
+        <img src="assets/loverin.webp" width="579" height="546" alt="翼とつのがある猫のキャラクター、らぶりん" fetchpriority="high">
+      </figure>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="sheet" class="panel" aria-labelledby="sheet-title">
+      <div class="panel-head">
+        <h2 id="sheet-title">観察シート</h2>
+        <p>毎日ちょっと見て、日付・長さ・色・メモを書こう。写真はなくても大丈夫。自由研究は「レポートを印刷」、配る用は「空欄シートを印刷」だよ。</p>
+      </div>
+
+      <form id="sheet-form" class="sheet-form" action="#" autocomplete="off">
+        <div class="start-card">
+          <label class="field" for="start-date">
+            <span>育て始めた日</span>
+            <input id="start-date" name="start-date" type="date" data-role="start">
+          </label>
+          <label class="field" for="observer-name">
+            <span>名前（任意）</span>
+            <input id="observer-name" name="observer-name" type="text" maxlength="40" autocomplete="off" placeholder="なまえ" data-role="name">
+          </label>
+          <label class="field" for="observer-grade">
+            <span>学年・組（任意）</span>
+            <input id="observer-grade" name="observer-grade" type="text" maxlength="24" autocomplete="off" placeholder="3年2組" data-role="grade">
+          </label>
+          <button type="button" class="btn btn-ghost" id="start-today">今日からはじめる</button>
+          <p class="hint" id="start-hint">この日が1日目。今日のフレーズと「今日」マークは、ここから数えるよ。始めた日を変えると、1〜7日目の日付も一緒に動くよ。</p>
+        </div>
+
+        <div class="sheet-actions no-print">
+          <button type="button" class="btn btn-primary" id="print-report-btn">レポートを印刷</button>
+          <button type="button" class="btn btn-ghost" id="print-blank-btn">空欄シートを印刷</button>
+          <p class="save-status" id="save-status" role="status" aria-live="polite">まだ保存していないよ</p>
+        </div>
+        <div class="print-only sheet-columns" aria-hidden="true">
+          <span>日</span>
+          <span>日付</span>
+          <span>長さ</span>
+          <span>色</span>
+          <span>メモ</span>
+        </div>
+        <div id="days" class="days"></div>
+        <noscript>
+          <p class="noscript-note">観察シートの保存には JavaScript が必要です。育て方の文章はこのままでも読めます。</p>
+        </noscript>
+
+        <div class="screen-chart no-print" id="screen-chart" aria-label="長さのグラフ"></div>
+
+        <label class="field field-reflect" for="reflection">
+          <span>わかったこと・かんそう</span>
+          <textarea id="reflection" name="reflection" rows="3" maxlength="400" placeholder="育って気づいたこと、かんじたことを書こう"></textarea>
+        </label>
+
+        <div class="sheet-actions no-print">
+          <button type="button" class="btn btn-primary" data-print-trigger="report">レポートを印刷</button>
+          <button type="button" class="btn btn-ghost" data-print-trigger="blank">空欄シートを印刷</button>
+          <button type="button" class="btn btn-text" id="clear-log">メモを全部消す</button>
+        </div>
+        <p class="hint print-hint no-print">自由研究の提出には「レポートを印刷」。写真といっしょに、そのまま出せるよ。クラスで配るときは「空欄シートを印刷」。</p>
+        <p class="hint device-note no-print">メモも写真も、このスマホのこのブラウザだけに残るよ。毎日おなじスマホで開いてね。ブラウザのデータを消すと、記録も消えちゃうよ。</p>
+
+        <div id="form-slot" class="form-slot"></div>
+      </form>
+    </section>
+
+    <section id="print-report" class="print-report" aria-hidden="true">
+      <header class="report-head">
+        <img src="assets/loverin.webp" width="579" height="546" alt="">
+        <div>
+          <p class="report-brand">らぶりん英会話</p>
+          <h2 class="report-title">ブロッコリースーパースプラウト観察レポート</h2>
+          <p class="report-meta" id="report-meta"></p>
+        </div>
+      </header>
+      <div id="report-chart" class="report-chart"></div>
+      <div id="report-days" class="report-days"></div>
+      <section class="report-reflect">
+        <h3>わかったこと・かんそう</h3>
+        <p id="report-reflect-text"></p>
+      </section>
+    </section>
+
+    <section id="howto" class="panel" aria-labelledby="howto-title">
+      <div class="panel-head">
+        <h2 id="howto-title">育て方の補足 <span class="en en-inline" lang="en">How to grow</span></h2>
+        <p>カードの手順はこちら。水は毎日かえるのがポイントだよ。</p>
+      </div>
+      <ol class="steps">
+        <li class="step step-water">
+          <span class="step-no">1</span>
+          <span class="pill" lang="en">water</span>
+          <p>容器にキッチンペーパーを敷き、ひたひたに水を含ませる。</p>
+        </li>
+        <li class="step step-seed">
+          <span class="step-no">2</span>
+          <span class="pill" lang="en">seed</span>
+          <p>種を重ならないように広げてまく。</p>
+        </li>
+        <li class="step step-dark">
+          <span class="step-no">3</span>
+          <span class="pill" lang="en">dark</span>
+          <p>3〜4日は暗い場所へ（箱をかぶせてもOK）。</p>
+        </li>
+        <li class="step step-sun">
+          <span class="step-no">4</span>
+          <span class="pill" lang="en">sunlight</span>
+          <p>芽が3cmほど伸びたら明るい窓辺へ。緑色になります。</p>
+        </li>
+        <li class="step step-harvest">
+          <span class="step-no">5</span>
+          <span class="pill" lang="en">harvest</span>
+          <p>7〜10日で収穫。根元からハサミで切りましょう。ハサミは大人と一緒に使ってね。</p>
+        </li>
+      </ol>
+      <p class="water-banner">
+        <span class="drop" aria-hidden="true">💧</span>
+        <span>水は1日2回、全部とりかえてね</span>
+        <span class="en" lang="en">Water, twice a day!</span>
+      </p>
+    </section>
+
+    <section id="safety" class="panel" aria-labelledby="safety-title">
+      <div class="panel-head safety-head">
+        <div>
+          <h2 id="safety-title">こまったときは</h2>
+          <p>カビやにおいがしたら、食べないでね。このページは観察用で、健康や病気のことは案内しないよ。</p>
+        </div>
+        <figure class="safety-figure">
+          <figcaption class="bubble bubble-small">
+            <span class="en" lang="en">Let's be careful.</span>
+            <span class="ja">食べる前に、いっしょに見よう！</span>
+          </figcaption>
+          <img src="assets/robo.webp" width="479" height="528" alt="水色の目をした白いロボット" decoding="async">
+        </figure>
+      </div>
+      <div class="faq">
+        <article>
+          <h3>カビ・白くにごった水・変なにおい</h3>
+          <p>食べずに捨ててください。口に入れないで、おうちの人や先生に知らせましょう。容器も洗ってください。</p>
+        </article>
+        <article>
+          <h3>食べるとき</h3>
+          <p>食べる前に、きれいな水でよく洗いましょう。加熱して食べることをおすすめします。生で食べてよいかは、このページでは案内しません。</p>
+        </article>
+        <article>
+          <h3>収穫したあと</h3>
+          <p>冷蔵庫に入れて、早めに食べましょう。長く置くと傷みやすくなります。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="phrases" class="panel" aria-labelledby="phrases-title">
+      <div class="panel-head phrase-head">
+        <div>
+          <h2 id="phrases-title">らぶりんの毎日フレーズ</h2>
+          <p>1日にひとつ。育て始めた日から数えて、今日のフレーズが光るよ。声に出してみてね。</p>
+          <p class="today-phrase" id="today-phrase" aria-live="polite"></p>
+        </div>
+        <figure class="phrase-figure">
+          <figcaption class="bubble bubble-small" id="dragon-bubble">
+            <span class="en" lang="en" id="dragon-en">Let's grow!</span>
+            <span class="ja" id="dragon-ja">一緒に育てよう！</span>
+          </figcaption>
+          <img src="assets/dragon.webp" width="560" height="549" alt="翼とつのがある、小さなオレンジ色のドラゴン" decoding="async">
+        </figure>
+      </div>
+      <ol class="phrase-list">
+        <li class="phrase" data-day="1">
+          <p class="phrase-day"><span>Day 1</span> 1日目</p>
+          <p class="phrase-en" lang="en">Let's start!</p>
+          <p class="phrase-ja">さあ、始めよう！</p>
+          <button type="button" class="btn btn-speak speak" data-speak="Let's start!">英語を聞く</button>
+        </li>
+        <li class="phrase" data-day="2">
+          <p class="phrase-day"><span>Day 2</span> 2日目</p>
+          <p class="phrase-en" lang="en">I water the seeds.</p>
+          <p class="phrase-ja">種に水をあげるよ。</p>
+          <button type="button" class="btn btn-speak speak" data-speak="I water the seeds.">英語を聞く</button>
+        </li>
+        <li class="phrase" data-day="3">
+          <p class="phrase-day"><span>Day 3</span> 3日目</p>
+          <p class="phrase-en" lang="en">Stay in the dark.</p>
+          <p class="phrase-ja">暗い場所で休もう。</p>
+          <button type="button" class="btn btn-speak speak" data-speak="Stay in the dark.">英語を聞く</button>
+        </li>
+        <li class="phrase" data-day="4">
+          <p class="phrase-day"><span>Day 4</span> 4日目</p>
+          <p class="phrase-en" lang="en">A tiny sprout!</p>
+          <p class="phrase-ja">小さな芽が出た！</p>
+          <button type="button" class="btn btn-speak speak" data-speak="A tiny sprout!">英語を聞く</button>
+        </li>
+        <li class="phrase" data-day="5">
+          <p class="phrase-day"><span>Day 5</span> 5日目</p>
+          <p class="phrase-en" lang="en">Look, it's green!</p>
+          <p class="phrase-ja">見て、緑色だよ！</p>
+          <button type="button" class="btn btn-speak speak" data-speak="Look, it's green!">英語を聞く</button>
+        </li>
+        <li class="phrase" data-day="6">
+          <p class="phrase-day"><span>Day 6</span> 6日目</p>
+          <p class="phrase-en" lang="en">Growing every day.</p>
+          <p class="phrase-ja">毎日育っているよ。</p>
+          <button type="button" class="btn btn-speak speak" data-speak="Growing every day.">英語を聞く</button>
+        </li>
+        <li class="phrase" data-day="7">
+          <p class="phrase-day"><span>Day 7</span> 7日目</p>
+          <p class="phrase-en" lang="en">Harvest time!</p>
+          <p class="phrase-ja">収穫の時間だよ！</p>
+          <button type="button" class="btn btn-speak speak" data-speak="Harvest time!">英語を聞く</button>
+        </li>
+      </ol>
+    </section>
+
+    <section id="app" class="panel app-panel" aria-labelledby="app-title">
+      <h2 id="app-title">らぶりん英会話で話してみよう</h2>
+      <p>きょうのフレーズ、声に出したらアプリでも練習できるよ。</p>
+      <div id="app-links" class="app-links"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>らぶりん英会話 · ブロッコリースーパースプラウト観察メモ</p>
+    <p>観察の記録はこの端末だけに保存されます。健康や医療の案内ではありません。</p>
+    <p>運営：I's factory</p>
+    <p>お問い合わせ：<a href="mailto:isfactoryforgmail@gmail.com">isfactoryforgmail@gmail.com</a></p>
+    <p><a href="https://epm1192.github.io/">らぶりん英会話のサイト</a></p>
+  </footer>
+
+  <template id="day-template">
+    <article class="day">
+      <div class="day-label">
+        <span class="day-badge"><span class="day-num">1</span></span>
+        <span class="day-name"><span class="day-ja">1日目</span> <span class="day-en en" lang="en">Day 1</span></span>
+        <span class="today-flag" hidden>今日</span>
+      </div>
+      <label class="field field-date">
+        <span>日付</span>
+        <input type="date" data-field="date">
+      </label>
+      <label class="field field-length">
+        <span>長さ（cm）</span>
+        <input type="number" data-field="length" inputmode="decimal" min="0" max="40" step="0.1" placeholder="0.0">
+      </label>
+      <label class="field field-color">
+        <span>色</span>
+        <select data-field="color">
+          <option value="">選ぶ</option>
+          <option>白</option>
+          <option>うすい黄</option>
+          <option>うすい緑</option>
+          <option>緑</option>
+          <option>その他</option>
+        </select>
+      </label>
+      <label class="field field-memo">
+        <span>メモ</span>
+        <textarea data-field="memo" rows="2" maxlength="120" placeholder="気づいたことを書こう"></textarea>
+      </label>
+      <div class="photo no-print">
+        <label class="btn btn-ghost photo-label">
+          写真を追加
+          <input class="file-input" type="file" data-field="photo" accept="image/*">
+        </label>
+        <img class="photo-preview" alt="" hidden>
+        <button type="button" class="btn btn-text photo-remove" hidden>写真を消す</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
