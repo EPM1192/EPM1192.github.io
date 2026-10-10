@@ -13,6 +13,15 @@
   };
 
   var STORAGE_KEY = "raburin-sprout-log-v1";
+  var FULL_FIELDS = ["title", "motive", "hypothesis", "materials", "method", "summary", "discussion", "impression"];
+  var METHOD_TEMPLATE = [
+    "1. 種をコップの水に、ひと晩（8〜12時間）つけた。",
+    "2. 水を捨てて、種を穴あきカップに広げた。",
+    "3. 暗くてあたたかい場所（20〜25℃）に置いた。",
+    "4. 1日2回、流しの上でカップに水をさっとかけて、よく水を切った。",
+    "5. 芽が2〜3cmになったら、明るい窓辺に移した。",
+    "6. 毎日、ものさしで長さをはかり、色を見て、写真を撮った。"
+  ].join("\n");
 
   var startInput;
   var nameInput;
@@ -20,6 +29,8 @@
   var reflectionInput;
   var statusEl;
   var saveTimer = 0;
+  var reopenFullDialog = false;
+  var fullDialogOpener = null;
 
   function todayISO() {
     var now = new Date();
@@ -71,8 +82,38 @@
     return "";
   }
 
+  function emptyFullReport() {
+    return {
+      title: "",
+      motive: "",
+      hypothesis: "",
+      materials: "",
+      method: "",
+      summary: "",
+      discussion: "",
+      impression: ""
+    };
+  }
+
+  function normalizeFullReport(value) {
+    var blank = emptyFullReport();
+    if (!value || typeof value !== "object") return blank;
+    FULL_FIELDS.forEach(function (name) {
+      blank[name] = typeof value[name] === "string" ? value[name] : "";
+    });
+    return blank;
+  }
+
   function emptyState() {
-    return { version: 1, startDate: "", name: "", grade: "", reflection: "", days: {} };
+    return {
+      version: 1,
+      startDate: "",
+      name: "",
+      grade: "",
+      reflection: "",
+      days: {},
+      fullReport: emptyFullReport()
+    };
   }
 
   function readState() {
@@ -82,10 +123,39 @@
       var data = JSON.parse(raw);
       if (!data || typeof data !== "object") return emptyState();
       data.days = data.days || {};
+      data.fullReport = normalizeFullReport(data.fullReport);
       return data;
     } catch (error) {
       return emptyState();
     }
+  }
+
+  function fullInput(name) {
+    return document.getElementById("full-" + name);
+  }
+
+  function readFullReport() {
+    var data = emptyFullReport();
+    FULL_FIELDS.forEach(function (name) {
+      var el = fullInput(name);
+      data[name] = el ? el.value : "";
+    });
+    return data;
+  }
+
+  function writeFullReport(data) {
+    var source = normalizeFullReport(data);
+    FULL_FIELDS.forEach(function (name) {
+      var el = fullInput(name);
+      if (el) el.value = source[name];
+    });
+  }
+
+  function hasFullReportText(data) {
+    var source = data || {};
+    return FULL_FIELDS.some(function (name) {
+      return !!source[name];
+    });
   }
 
   function collectState() {
@@ -94,6 +164,7 @@
     state.name = nameInput.value || "";
     state.grade = gradeInput.value || "";
     state.reflection = reflectionInput.value || "";
+    state.fullReport = readFullReport();
     document.querySelectorAll(".day").forEach(function (day) {
       var key = day.getAttribute("data-day");
       var photo = day.querySelector(".photo-preview");
@@ -115,6 +186,8 @@
 
   function setStatus(message) {
     statusEl.textContent = message;
+    var fullStatus = document.getElementById("full-save-status");
+    if (fullStatus) fullStatus.textContent = message;
   }
 
   function writeState(state) {
@@ -283,6 +356,7 @@
     nameInput.value = state.name || "";
     gradeInput.value = state.grade || "";
     reflectionInput.value = state.reflection || "";
+    writeFullReport(state.fullReport);
     document.querySelectorAll(".day").forEach(function (day) {
       var saved = state.days[day.getAttribute("data-day")] || {};
       day.querySelector('[data-field="date"]').value = saved.date || "";
@@ -293,8 +367,9 @@
     });
     applyStartDates(false);
     updateHighlight();
+    updateDiscussionHint();
     renderReport();
-    if (state.startDate || state.name || state.grade || state.reflection || Object.keys(state.days).length) {
+    if (state.startDate || state.name || state.grade || state.reflection || hasFullReportText(state.fullReport) || Object.keys(state.days).length) {
       setStatus("この端末に保存してあるメモを開いたよ");
     }
   }
@@ -325,7 +400,7 @@
   }
 
   function clearLog() {
-    var ok = window.confirm("この端末に保存した観察メモを消します。写真も消えます。");
+    var ok = window.confirm("この端末に保存した観察メモを消します。写真も消えます。自由研究レポートに書いた文章は残します。");
     if (!ok) return;
     try {
       window.localStorage.removeItem(STORAGE_KEY);
@@ -345,8 +420,9 @@
       showPhoto(day, "");
     });
     updateHighlight();
-    renderReport();
-    setStatus("メモを消したよ");
+    updateDiscussionHint();
+    saveNow();
+    setStatus("観察メモを消したよ。自由研究の文章は残してあるよ。");
   }
 
   function displayDate(iso) {
@@ -522,13 +598,306 @@
     var text = reflectionInput.value.trim();
     reflect.textContent = text || "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿";
     reflect.classList.toggle("is-empty", !text);
+    if (document.getElementById("full-print-body")) renderFullReport();
+  }
+
+  function periodLabel() {
+    var start = startInput.value;
+    if (!start) return "＿月＿日〜＿月＿日";
+    return displayDate(start) + "〜" + displayDate(addDays(start, 6));
+  }
+
+  function updateFullWho() {
+    var el = document.getElementById("full-who");
+    if (!el || !nameInput) return;
+    var name = nameInput.value.trim();
+    var grade = gradeInput.value.trim();
+    el.textContent = "なまえ：" + (name || "（まだ空欄）") + "　学年・組：" + (grade || "（まだ空欄）") + "　期間：" + periodLabel() + "。観察シートの名前・学年・始めた日を使うよ。";
+  }
+
+  function updateDiscussionHint() {
+    var hint = document.getElementById("full-discussion-hint");
+    if (!hint || !reflectionInput) return;
+    var existing = reflectionInput.value.trim();
+    if (!existing) {
+      hint.textContent = "れい：予想では10cmになると思ったけど、7日目は8cmだった。色は予想どおり緑になった。観察シートの「わかったこと・かんそう」とは別に書こう。";
+      return;
+    }
+    var clip = existing.length > 42 ? existing.slice(0, 42) + "…" : existing;
+    hint.textContent = "観察シートの「わかったこと・かんそう」とは別のらん。予想とくらべて書こう。シートには「" + clip + "」と書いてあるよ。";
+  }
+
+  function lineBox(text, linesClass) {
+    var box = document.createElement("div");
+    var value = text ? String(text).trim() : "";
+    box.className = "full-lines " + (value ? "has-text" : "is-blank " + linesClass);
+    if (value) {
+      box.textContent = value;
+      return box;
+    }
+    var counts = { "lines-1": 1, "lines-2": 2, "lines-4": 4, "lines-5": 5, "lines-6": 6 };
+    var count = counts[linesClass] || 4;
+    for (var i = 0; i < count; i += 1) {
+      var rule = document.createElement("div");
+      rule.className = "full-rule";
+      box.appendChild(rule);
+    }
+    return box;
+  }
+
+  function sectionBlock(heading, node) {
+    var section = document.createElement("section");
+    section.className = "full-sec";
+    var keep = document.createElement("div");
+    keep.className = "full-keep";
+    var h3 = document.createElement("h3");
+    h3.textContent = heading;
+    keep.appendChild(h3);
+    keep.appendChild(node);
+    section.appendChild(keep);
+    return section;
+  }
+
+  function subKeep(label, node) {
+    var wrap = document.createElement("div");
+    wrap.className = "full-keep";
+    var h4 = document.createElement("h4");
+    h4.textContent = label;
+    wrap.appendChild(h4);
+    wrap.appendChild(node);
+    return wrap;
+  }
+
+  function buildFullTable() {
+    var table = document.createElement("table");
+    table.className = "full-table";
+    table.setAttribute("aria-label", "7日間の観察記録");
+    var thead = document.createElement("thead");
+    var headRow = document.createElement("tr");
+    ["日", "日付", "長さ", "色", "メモ"].forEach(function (label) {
+      var th = document.createElement("th");
+      th.scope = "col";
+      th.textContent = label;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+    var tbody = document.createElement("tbody");
+    document.querySelectorAll("#days .day").forEach(function (day) {
+      var number = day.getAttribute("data-day");
+      var length = valueOf(day, "length");
+      var cells = [
+        number + "日目",
+        displayDate(valueOf(day, "date")),
+        length ? length + " cm" : "",
+        valueOf(day, "color"),
+        valueOf(day, "memo")
+      ];
+      var tr = document.createElement("tr");
+      cells.forEach(function (cellText) {
+        var td = document.createElement("td");
+        td.textContent = cellText || "";
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    return table;
+  }
+
+  function buildFullPhotos() {
+    var grid = document.createElement("div");
+    grid.className = "full-photos";
+    document.querySelectorAll("#days .day").forEach(function (day) {
+      var number = day.getAttribute("data-day");
+      var fig = document.createElement("figure");
+      fig.className = "full-photo";
+      var photo = day.querySelector(".photo-preview");
+      var src = photo ? photo.getAttribute("src") : "";
+      if (isSafePhoto(src)) {
+        var img = document.createElement("img");
+        img.src = src;
+        img.alt = number + "日目の写真";
+        fig.appendChild(img);
+      } else {
+        var empty = document.createElement("div");
+        empty.className = "full-photo-empty";
+        empty.textContent = "写真";
+        fig.appendChild(empty);
+      }
+      var cap = document.createElement("figcaption");
+      cap.textContent = number + "日目";
+      fig.appendChild(cap);
+      grid.appendChild(fig);
+    });
+    return grid;
+  }
+
+  function methodSection(materials, method) {
+    var section = document.createElement("section");
+    section.className = "full-sec";
+    var first = document.createElement("div");
+    first.className = "full-keep";
+    var h3 = document.createElement("h3");
+    h3.textContent = "③ 研究の方法";
+    var h4 = document.createElement("h4");
+    h4.textContent = "用意したもの";
+    first.appendChild(h3);
+    first.appendChild(h4);
+    first.appendChild(lineBox(materials, "lines-2"));
+    section.appendChild(first);
+    section.appendChild(subKeep("やり方", lineBox(method, "lines-6")));
+    return section;
+  }
+
+  function resultsSection(summary) {
+    var section = document.createElement("section");
+    section.className = "full-sec";
+    var tableWrap = document.createElement("div");
+    tableWrap.className = "full-keep-loose";
+    var h3 = document.createElement("h3");
+    h3.textContent = "④ 結果";
+    var h4 = document.createElement("h4");
+    h4.textContent = "7日間の記録";
+    tableWrap.appendChild(h3);
+    tableWrap.appendChild(h4);
+    tableWrap.appendChild(buildFullTable());
+    section.appendChild(tableWrap);
+    section.appendChild(subKeep("写真", buildFullPhotos()));
+    var chart = document.createElement("div");
+    chart.className = "full-print-chart";
+    section.appendChild(subKeep("長さのグラフ", chart));
+    renderChartInto(chart, collectLengths());
+    section.appendChild(subKeep("結果のまとめ", lineBox(summary, "lines-4")));
+    return section;
+  }
+
+  function renderFullHeader(full) {
+    var slot = document.getElementById("full-print-title-slot");
+    if (!slot) return;
+    slot.replaceChildren();
+    var title = (full.title || "").trim();
+    if (title) {
+      var h2 = document.createElement("h2");
+      h2.className = "report-title";
+      h2.textContent = title;
+      slot.appendChild(h2);
+    } else {
+      var label = document.createElement("p");
+      label.className = "full-title-label";
+      label.textContent = "研究のタイトル";
+      slot.appendChild(label);
+      slot.appendChild(lineBox("", "lines-1"));
+    }
+    var meta = document.getElementById("full-print-meta");
+    meta.replaceChildren();
+    var name = nameInput.value.trim();
+    var grade = gradeInput.value.trim();
+    [
+      "なまえ：" + (name || "＿＿＿＿"),
+      "学年・組：" + (grade || "＿＿＿＿"),
+      "期間：" + periodLabel()
+    ].forEach(function (line) {
+      var span = document.createElement("span");
+      span.textContent = line;
+      meta.appendChild(span);
+    });
+  }
+
+  function renderFullPreview() {
+    var tableHost = document.getElementById("full-preview-table");
+    var photoHost = document.getElementById("full-preview-photos");
+    var chartHost = document.getElementById("full-preview-chart");
+    if (!tableHost || !photoHost || !chartHost) return;
+    tableHost.replaceChildren(buildFullTable());
+    photoHost.replaceChildren(buildFullPhotos());
+    renderChartInto(chartHost, collectLengths());
+  }
+
+  function renderFullReport() {
+    var full = readFullReport();
+    renderFullHeader(full);
+    var body = document.getElementById("full-print-body");
+    if (!body) return;
+    body.replaceChildren(
+      sectionBlock("① 調べようと思ったきっかけ", lineBox(full.motive, "lines-5")),
+      sectionBlock("② 予想（どうなると思ったか）", lineBox(full.hypothesis, "lines-5")),
+      methodSection(full.materials, full.method),
+      resultsSection(full.summary),
+      sectionBlock("⑤ 考察（わかったこと・予想とくらべて）", lineBox(full.discussion, "lines-5")),
+      sectionBlock("⑥ 感想・これから調べたいこと", lineBox(full.impression, "lines-5"))
+    );
+    renderFullPreview();
+    updateFullWho();
+  }
+
+  function fullDialog() {
+    return document.getElementById("full-report-dialog");
+  }
+
+  function openFullDialog(opener) {
+    updateDiscussionHint();
+    updateFullWho();
+    renderFullReport();
+    var dialog = fullDialog();
+    if (!dialog) return;
+    if (opener) fullDialogOpener = opener;
+    if (typeof dialog.showModal === "function") {
+      if (!dialog.open) dialog.showModal();
+    } else if (!dialog.hasAttribute("open")) {
+      dialog.setAttribute("open", "");
+      dialog.classList.add("is-fallback");
+    }
+    var title = document.getElementById("full-title");
+    window.setTimeout(function () {
+      if (title) title.focus();
+    }, 0);
+  }
+
+  function closeFullDialog() {
+    var dialog = fullDialog();
+    if (!dialog) return;
+    var fallback = dialog.classList.contains("is-fallback");
+    if (typeof dialog.close === "function" && dialog.open) dialog.close();
+    else dialog.removeAttribute("open");
+    dialog.classList.remove("is-fallback");
+    if (fallback && fullDialogOpener && typeof fullDialogOpener.focus === "function") {
+      fullDialogOpener.focus();
+    }
+  }
+
+  function insertMethod() {
+    var el = fullInput("method");
+    if (!el) return;
+    var current = el.value.trim();
+    if (current && current.indexOf(METHOD_TEMPLATE) !== -1) {
+      setStatus("キットの育て方は、もう入っているよ");
+      return;
+    }
+    el.value = current ? el.value.replace(/\s+$/, "") + "\n" + METHOD_TEMPLATE : METHOD_TEMPLATE;
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.focus();
   }
 
   function beginPrint(mode) {
     saveNow();
     renderReport();
+    if (mode === "full") renderFullReport();
+    var dialog = fullDialog();
+    if (dialog && dialog.open) {
+      reopenFullDialog = true;
+      closeFullDialog();
+    }
     document.body.setAttribute("data-print", mode);
-    window.print();
+    try {
+      window.print();
+    } catch (error) {
+      document.body.removeAttribute("data-print");
+      if (reopenFullDialog) {
+        reopenFullDialog = false;
+        openFullDialog();
+      }
+    }
   }
 
   function todoNote(message) {
@@ -643,9 +1012,18 @@
       scheduleSave();
     });
 
-    nameInput.addEventListener("input", scheduleSave);
-    gradeInput.addEventListener("input", scheduleSave);
-    reflectionInput.addEventListener("input", scheduleSave);
+    nameInput.addEventListener("input", function () {
+      updateFullWho();
+      scheduleSave();
+    });
+    gradeInput.addEventListener("input", function () {
+      updateFullWho();
+      scheduleSave();
+    });
+    reflectionInput.addEventListener("input", function () {
+      updateDiscussionHint();
+      scheduleSave();
+    });
 
     document.getElementById("start-today").addEventListener("click", function () {
       var today = todayISO();
@@ -670,18 +1048,51 @@
       saveNow();
     });
 
-    document.getElementById("print-report-btn").addEventListener("click", function () {
-      beginPrint("report");
-    });
-    document.getElementById("print-blank-btn").addEventListener("click", function () {
-      beginPrint("blank");
-    });
     document.querySelectorAll("[data-print-trigger]").forEach(function (button) {
       button.addEventListener("click", function () {
         beginPrint(button.getAttribute("data-print-trigger"));
       });
     });
+    document.querySelectorAll("[data-open-full]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        openFullDialog(button);
+      });
+    });
+    document.querySelectorAll("[data-close-full]").forEach(function (button) {
+      button.addEventListener("click", closeFullDialog);
+    });
+    var dialog = fullDialog();
+    if (dialog) {
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog) closeFullDialog();
+      });
+      dialog.addEventListener("input", scheduleSave);
+    }
+    document.getElementById("print-full-btn").addEventListener("click", function () {
+      beginPrint("full");
+    });
+    document.getElementById("insert-method").addEventListener("click", insertMethod);
+    document.getElementById("edit-who").addEventListener("click", function () {
+      closeFullDialog();
+      window.setTimeout(function () {
+        nameInput.focus();
+        var card = nameInput.closest(".start-card");
+        if (card && card.scrollIntoView) card.scrollIntoView({ block: "center" });
+      }, 0);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape") return;
+      var openDialog = fullDialog();
+      if (!openDialog || !openDialog.classList.contains("is-fallback")) return;
+      if (!openDialog.hasAttribute("open")) return;
+      closeFullDialog();
+    });
     window.addEventListener("beforeprint", function () {
+      var openDialog = fullDialog();
+      if (openDialog && openDialog.open) {
+        reopenFullDialog = true;
+        closeFullDialog();
+      }
       if (!document.body.getAttribute("data-print")) {
         document.body.setAttribute("data-print", "blank");
         document.body.setAttribute("data-print-auto", "1");
@@ -691,6 +1102,10 @@
     window.addEventListener("afterprint", function () {
       document.body.removeAttribute("data-print");
       document.body.removeAttribute("data-print-auto");
+      if (reopenFullDialog) {
+        reopenFullDialog = false;
+        openFullDialog();
+      }
     });
 
     document.getElementById("clear-log").addEventListener("click", clearLog);

@@ -48,7 +48,7 @@
       </h1>
       <p class="lead">キットのカードから来てくれてありがとう。芽の長さや色を、7日分メモできるよ。</p>
       <p class="lead">テレビや研究でも注目されているスルフォラファンを含む、ブロッコリーの新芽。1週間でぐんぐん育つので、観察も収穫も楽しめます。</p>
-      <p class="summer-badge">夏休みの自由研究にも使えるよ！写真つきレポートを印刷して、そのまま提出できるよ。</p>
+      <p class="summer-badge">夏休みの自由研究にも使えるよ！かんたんレポートも、本格版の自由研究レポートも印刷して提出できるよ。</p>
       <figure class="hero-figure">
         <img src="assets/hero_sticker.webp" width="720" height="720" alt="らぶりん、ドラゴン、ロボットがブロッコリースプラウトのカップを見守っているステッカー" fetchpriority="high">
         <span class="sticker-deco sticker-deco-heart" aria-hidden="true">♥</span>
@@ -63,7 +63,7 @@
     <section id="sheet" class="panel" aria-labelledby="sheet-title">
       <div class="panel-head">
         <h2 id="sheet-title">観察シート</h2>
-        <p>毎日ちょっと見て、日付・長さ・色・メモを書こう。写真はなくても大丈夫。自由研究は「レポートを印刷」、配る用は「空欄シートを印刷」だよ。</p>
+        <p>毎日ちょっと見て、日付・長さ・色・メモを書こう。写真はなくても大丈夫。自由研究は「かんたんレポートを印刷」か「自由研究レポート（本格版）を作る」、配る用は「空欄シートを印刷」だよ。</p>
       </div>
 
       <form id="sheet-form" class="sheet-form" action="#" autocomplete="off">
@@ -85,8 +85,11 @@
         </div>
 
         <div class="sheet-actions no-print">
-          <button type="button" class="btn btn-primary" id="print-report-btn">レポートを印刷</button>
-          <button type="button" class="btn btn-ghost" id="print-blank-btn">空欄シートを印刷</button>
+          <div class="report-btn-group" role="group" aria-label="レポート">
+            <button type="button" class="btn btn-primary" id="open-full-report" data-open-full>自由研究レポート（本格版）を作る</button>
+            <button type="button" class="btn btn-ghost" id="print-report-btn" data-print-trigger="report">かんたんレポートを印刷</button>
+            <button type="button" class="btn btn-ghost" id="print-blank-btn" data-print-trigger="blank">空欄シートを印刷</button>
+          </div>
           <p class="save-status" id="save-status" role="status" aria-live="polite">まだ保存していないよ</p>
         </div>
         <div class="print-only sheet-columns" aria-hidden="true">
@@ -109,11 +112,14 @@
         </label>
 
         <div class="sheet-actions no-print">
-          <button type="button" class="btn btn-primary" data-print-trigger="report">レポートを印刷</button>
-          <button type="button" class="btn btn-ghost" data-print-trigger="blank">空欄シートを印刷</button>
+          <div class="report-btn-group" role="group" aria-label="レポート">
+            <button type="button" class="btn btn-primary" data-open-full>自由研究レポート（本格版）を作る</button>
+            <button type="button" class="btn btn-ghost" data-print-trigger="report">かんたんレポートを印刷</button>
+            <button type="button" class="btn btn-ghost" data-print-trigger="blank">空欄シートを印刷</button>
+          </div>
           <button type="button" class="btn btn-text" id="clear-log">メモを全部消す</button>
         </div>
-        <p class="hint print-hint no-print">自由研究の提出には「レポートを印刷」。写真といっしょに、そのまま出せるよ。クラスで配るときは「空欄シートを印刷」。</p>
+        <p class="hint print-hint no-print">自由研究の提出には「かんたんレポートを印刷」（写真・7日分のメモ・グラフ）。「自由研究レポート（本格版）」は、きっかけ・予想・方法・結果・考察・感想の自由研究の流れで書けるよ。クラスで配るときは「空欄シートを印刷」。</p>
         <p class="hint device-note no-print">メモも写真も、このスマホのこのブラウザだけに残るよ。毎日おなじスマホで開いてね。ブラウザのデータを消すと、記録も消えちゃうよ。</p>
 
       </form>
@@ -134,6 +140,19 @@
         <h3>わかったこと・かんそう</h3>
         <p id="report-reflect-text"></p>
       </section>
+    </section>
+
+    <section id="print-full" class="print-full" aria-hidden="true">
+      <header class="report-head full-head">
+        <img src="assets/loverin.webp" width="579" height="546" alt="">
+        <div>
+          <p class="report-brand">らぶりん英会話</p>
+          <p class="full-kicker">ブロッコリースプラウト　自由研究</p>
+          <div id="full-print-title-slot"></div>
+          <p class="report-meta" id="full-print-meta"></p>
+        </div>
+      </header>
+      <div id="full-print-body"></div>
     </section>
 
     <section id="howto" class="panel" aria-labelledby="howto-title">
@@ -325,6 +344,88 @@
       </div>
     </article>
   </template>
+
+  <dialog id="full-report-dialog" class="full-dialog no-print" aria-labelledby="full-dialog-title" aria-describedby="full-dialog-lead">
+    <div class="full-dialog-inner">
+      <div class="full-dialog-bar">
+        <h2 id="full-dialog-title">自由研究レポート（本格版）</h2>
+        <button type="button" class="btn btn-text" data-close-full>とじる</button>
+      </div>
+      <div class="full-dialog-scroll">
+        <p id="full-dialog-lead" class="hint">自由研究の順番で書けるよ。空欄のままでも大丈夫。印刷すると、空欄は手で書く線になるよ。</p>
+        <div class="full-who">
+          <p id="full-who"></p>
+          <button type="button" class="btn btn-text" id="edit-who">名前・学年をなおす</button>
+        </div>
+
+        <label class="field" for="full-title">
+          <span>研究のタイトル</span>
+          <span class="field-hint" id="full-title-hint">れい：ブロッコリースプラウトの成長の観察</span>
+          <input id="full-title" name="full-title" type="text" maxlength="60" autocomplete="off" placeholder="ブロッコリースプラウトの成長の観察" aria-describedby="full-title-hint">
+        </label>
+
+        <label class="field" for="full-motive">
+          <span>① 調べようと思ったきっかけ</span>
+          <span class="field-hint" id="full-motive-hint">れい：お店で見て、どうやって育つのか知りたくなった</span>
+          <textarea id="full-motive" name="full-motive" rows="3" maxlength="400" autocomplete="off" aria-describedby="full-motive-hint" placeholder="お店で見て、どうやって育つのか知りたくなった"></textarea>
+        </label>
+
+        <label class="field" for="full-hypothesis">
+          <span>② 予想（どうなると思ったか）</span>
+          <span class="field-hint" id="full-hypothesis-hint">れい：1週間で10cmくらいになって、緑色になると思った</span>
+          <textarea id="full-hypothesis" name="full-hypothesis" rows="3" maxlength="400" autocomplete="off" aria-describedby="full-hypothesis-hint" placeholder="1週間で10cmくらいになって、緑色になると思った"></textarea>
+        </label>
+
+        <fieldset class="full-method">
+          <legend>③ 研究の方法</legend>
+          <label class="field" for="full-materials">
+            <span>用意したもの</span>
+            <span class="field-hint" id="full-materials-hint">つかったものを書こう。れい：ブロッコリースプラウトの種、穴あきカップ、コップ、ものさし、スマホのカメラ</span>
+            <textarea id="full-materials" name="full-materials" rows="2" maxlength="200" autocomplete="off" aria-describedby="full-materials-hint" placeholder="ブロッコリースプラウトの種、穴あきカップ、コップ、ものさし、スマホのカメラ"></textarea>
+          </label>
+          <div class="field">
+            <div class="field-label-row">
+              <label for="full-method">やり方</label>
+              <button type="button" class="btn btn-ghost" id="insert-method">キットの育て方を入れる</button>
+            </div>
+            <span class="field-hint" id="full-method-hint">どの順番で育てて、毎日なにを見たか書こう。</span>
+            <textarea id="full-method" name="full-method" rows="6" maxlength="1000" autocomplete="off" aria-describedby="full-method-hint" placeholder="種を水につけて、毎日すすいで、長さと色を記録した"></textarea>
+          </div>
+        </fieldset>
+
+        <section class="full-auto" aria-labelledby="full-results-title">
+          <h3 id="full-results-title">④ 結果</h3>
+          <p class="hint">表・写真・グラフは、観察シートから自動で入るよ。ここには入力しないよ。長さや写真を変えるときは、シートにもどってね。</p>
+          <div id="full-preview-table"></div>
+          <div id="full-preview-photos"></div>
+          <div id="full-preview-chart"></div>
+          <label class="field" for="full-summary">
+            <span>結果のまとめ（空欄でもいいよ）</span>
+            <span class="field-hint" id="full-summary-hint">れい：日がたつほど長くなって、色が白から緑に変わった</span>
+            <textarea id="full-summary" name="full-summary" rows="3" maxlength="400" autocomplete="off" aria-describedby="full-summary-hint" placeholder="日がたつほど長くなって、色が白から緑に変わった"></textarea>
+          </label>
+        </section>
+
+        <label class="field" for="full-discussion">
+          <span>⑤ 考察（わかったこと・予想とくらべて）</span>
+          <span class="field-hint" id="full-discussion-hint">れい：予想では10cmになると思ったけど、7日目は8cmだった。色は予想どおり緑になった。観察シートの「わかったこと・かんそう」とは別に書こう。</span>
+          <textarea id="full-discussion" name="full-discussion" rows="4" maxlength="400" autocomplete="off" aria-describedby="full-discussion-hint" placeholder="予想とくらべて、どうだった？"></textarea>
+        </label>
+
+        <label class="field" for="full-impression">
+          <span>⑥ 感想・これから調べたいこと</span>
+          <span class="field-hint" id="full-impression-hint">れい：毎日見るのが楽しかった。次は水の量を変えて比べてみたい</span>
+          <textarea id="full-impression" name="full-impression" rows="3" maxlength="400" autocomplete="off" aria-describedby="full-impression-hint" placeholder="毎日見るのが楽しかった。次は水の量を変えて比べてみたい"></textarea>
+        </label>
+        <p class="save-status" id="full-save-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="full-dialog-actions">
+        <button type="button" class="btn btn-primary" id="print-full-btn">この内容で印刷・PDF保存</button>
+        <button type="button" class="btn btn-ghost" data-close-full>とじる</button>
+        <p class="hint full-print-note">印刷の画面で「PDFに保存」を選ぶと、PDFになるよ。</p>
+      </div>
+    </div>
+  </dialog>
 
   <script src="app.js"></script>
 </body>
