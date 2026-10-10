@@ -6,8 +6,6 @@
    * 外部の計測タグは置かない。
    */
   var SPROUT_CONFIG = {
-    // TODO: 観察メモ送信用 Google Form のURL（例: "https://docs.google.com/forms/d/e/.../viewform"）
-    GOOGLE_FORM_URL: "",
     APP_STORE_URL: "https://apps.apple.com/jp/app/id6792189779",
     PLAY_STORE_URL: "https://play.google.com/store/apps/details?id=com.isfactory.englishapp",
     // 公開サイト（GitHub Pages）。この観察ページは /sprout/ に置く。
@@ -544,23 +542,6 @@
     return p;
   }
 
-  function renderFormSlot() {
-    var slot = document.getElementById("form-slot");
-    var href = safeHttpUrl(SPROUT_CONFIG.GOOGLE_FORM_URL);
-    slot.replaceChildren();
-    if (!href) {
-      slot.appendChild(todoNote("観察メモを送る Google Form は未設定です（app.js の GOOGLE_FORM_URL）"));
-      return;
-    }
-    var link = document.createElement("a");
-    link.className = "btn btn-ghost";
-    link.href = href;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "観察メモをフォームで送る";
-    slot.appendChild(link);
-  }
-
   function renderAppLinks() {
     var slot = document.getElementById("app-links");
     slot.replaceChildren();
@@ -643,7 +624,6 @@
     reflectionInput = document.getElementById("reflection");
     statusEl = document.getElementById("save-status");
     buildDays();
-    renderFormSlot();
     renderAppLinks();
 
     if (!window.speechSynthesis) {

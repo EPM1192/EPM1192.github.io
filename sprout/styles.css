@@ -541,10 +541,6 @@ main {
   display: none;
 }
 
-.form-slot {
-  padding-top: 0.2rem;
-}
-
 .todo-note {
   display: flex;
   gap: 0.5rem;
@@ -611,10 +607,10 @@ main {
   font-size: 0.95rem;
 }
 
-.step-water .step-no,
-.step-water .pill { background: #0f6fa3; }
-.step-seed .step-no,
-.step-seed .pill { background: #b31866; }
+.step-soak .step-no,
+.step-soak .pill { background: #0f6fa3; }
+.step-cup .step-no,
+.step-cup .pill { background: #b31866; }
 .step-dark .step-no,
 .step-dark .pill { background: #5b4a99; }
 .step-sun .step-no,
@@ -875,7 +871,6 @@ main {
   #phrases,
   #app,
   .noscript,
-  .form-slot,
   .photo,
   .btn,
   .lead,
