@@ -673,7 +673,7 @@ main {
 }
 
 .full-dialog-actions .btn-primary {
-  flex: 1 1 14rem;
+  flex: 1 1 auto;
 }
 
 .full-dialog-actions .full-print-note {
@@ -721,9 +721,15 @@ main {
   display: grid;
   gap: 0.55rem;
   min-width: 0;
+  max-width: 100%;
   padding: 0.7rem;
   border-radius: 18px;
   background: var(--sky);
+}
+
+.full-auto > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .full-auto h3 {
@@ -733,13 +739,15 @@ main {
 
 #full-preview-table {
   overflow-x: auto;
+  min-width: 0;
   max-width: 100%;
 }
 
 #full-preview-table .full-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  font-size: 0.86rem;
+  font-size: 0.78rem;
   font-weight: 400;
 }
 
@@ -757,7 +765,13 @@ main {
   background: var(--lavender);
   color: var(--purple);
   font-weight: 800;
-  white-space: nowrap;
+  white-space: normal;
+}
+
+#full-preview-photos {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 #full-preview-photos .full-photos {
@@ -796,8 +810,15 @@ main {
   color: var(--purple);
 }
 
+#full-preview-chart {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 #full-preview-chart svg {
   width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
 }
@@ -834,6 +855,7 @@ main {
   }
 
   .full-dialog-actions .btn {
+    flex: 0 0 auto;
     width: 100%;
   }
 }
@@ -1518,6 +1540,13 @@ main {
 
   .print-full .full-sec {
     margin-top: 4.5mm;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-full .full-sec:has(.full-keep-loose) {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .print-full h3 {
@@ -1558,14 +1587,14 @@ main {
   }
 
   .full-lines.is-blank {
-    border: 0.5pt solid #b7b1bf;
+    border: 0.9pt solid #333;
     border-radius: 1.5mm;
     padding: 0 2.5mm;
   }
 
   .full-rule {
     height: 8mm;
-    border-bottom: 0.45pt solid #8d8796;
+    border-bottom: 0.7pt solid #333;
   }
 
   .full-table {
