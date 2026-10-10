@@ -29,8 +29,7 @@
   var reflectionInput;
   var statusEl;
   var saveTimer = 0;
-  var reopenFullDialog = false;
-  var fullDialogOpener = null;
+  var fullMode = false;
 
   function todayISO() {
     var now = new Date();
@@ -112,7 +111,8 @@
       grade: "",
       reflection: "",
       days: {},
-      fullReport: emptyFullReport()
+      fullReport: emptyFullReport(),
+      fullMode: false
     };
   }
 
@@ -124,6 +124,7 @@
       if (!data || typeof data !== "object") return emptyState();
       data.days = data.days || {};
       data.fullReport = normalizeFullReport(data.fullReport);
+      data.fullMode = data.fullMode === true;
       return data;
     } catch (error) {
       return emptyState();
@@ -165,6 +166,7 @@
     state.grade = gradeInput.value || "";
     state.reflection = reflectionInput.value || "";
     state.fullReport = readFullReport();
+    state.fullMode = fullMode;
     document.querySelectorAll(".day").forEach(function (day) {
       var key = day.getAttribute("data-day");
       var photo = day.querySelector(".photo-preview");
@@ -186,8 +188,6 @@
 
   function setStatus(message) {
     statusEl.textContent = message;
-    var fullStatus = document.getElementById("full-save-status");
-    if (fullStatus) fullStatus.textContent = message;
   }
 
   function writeState(state) {
@@ -368,8 +368,11 @@
     applyStartDates(false);
     updateHighlight();
     updateDiscussionHint();
+    document.body.classList.add("is-instant");
+    applyFullMode(state.fullMode === true);
+    document.body.classList.remove("is-instant");
     renderReport();
-    if (state.startDate || state.name || state.grade || state.reflection || hasFullReportText(state.fullReport) || Object.keys(state.days).length) {
+    if (state.fullMode || state.startDate || state.name || state.grade || state.reflection || hasFullReportText(state.fullReport) || Object.keys(state.days).length) {
       setStatus("この端末に保存してあるメモを開いたよ");
     }
   }
@@ -607,14 +610,6 @@
     return displayDate(start) + "〜" + displayDate(addDays(start, 6));
   }
 
-  function updateFullWho() {
-    var el = document.getElementById("full-who");
-    if (!el || !nameInput) return;
-    var name = nameInput.value.trim();
-    var grade = gradeInput.value.trim();
-    el.textContent = "なまえ：" + (name || "（まだ空欄）") + "　学年・組：" + (grade || "（まだ空欄）") + "　期間：" + periodLabel() + "。観察シートの名前・学年・始めた日を使うよ。";
-  }
-
   function updateDiscussionHint() {
     var hint = document.getElementById("full-discussion-hint");
     if (!hint || !reflectionInput) return;
@@ -804,16 +799,6 @@
     });
   }
 
-  function renderFullPreview() {
-    var tableHost = document.getElementById("full-preview-table");
-    var photoHost = document.getElementById("full-preview-photos");
-    var chartHost = document.getElementById("full-preview-chart");
-    if (!tableHost || !photoHost || !chartHost) return;
-    tableHost.replaceChildren(buildFullTable());
-    photoHost.replaceChildren(buildFullPhotos());
-    renderChartInto(chartHost, collectLengths());
-  }
-
   function renderFullReport() {
     var full = readFullReport();
     renderFullHeader(full);
@@ -827,43 +812,29 @@
       sectionBlock("⑤ 考察（わかったこと・予想とくらべて）", lineBox(full.discussion, "lines-5")),
       sectionBlock("⑥ 感想・これから調べたいこと", lineBox(full.impression, "lines-5"))
     );
-    renderFullPreview();
-    updateFullWho();
   }
 
-  function fullDialog() {
-    return document.getElementById("full-report-dialog");
-  }
-
-  function openFullDialog(opener) {
-    updateDiscussionHint();
-    updateFullWho();
-    renderFullReport();
-    var dialog = fullDialog();
-    if (!dialog) return;
-    if (opener) fullDialogOpener = opener;
-    if (typeof dialog.showModal === "function") {
-      if (!dialog.open) dialog.showModal();
-    } else if (!dialog.hasAttribute("open")) {
-      dialog.setAttribute("open", "");
-      dialog.classList.add("is-fallback");
-    }
-    var title = document.getElementById("full-title");
-    window.setTimeout(function () {
-      if (title) title.focus();
-    }, 0);
-  }
-
-  function closeFullDialog() {
-    var dialog = fullDialog();
-    if (!dialog) return;
-    var fallback = dialog.classList.contains("is-fallback");
-    if (typeof dialog.close === "function" && dialog.open) dialog.close();
-    else dialog.removeAttribute("open");
-    dialog.classList.remove("is-fallback");
-    if (fallback && fullDialogOpener && typeof fullDialogOpener.focus === "function") {
-      fullDialogOpener.focus();
-    }
+  function applyFullMode(open) {
+    fullMode = !!open;
+    document.body.classList.toggle("is-full-report", fullMode);
+    document.querySelectorAll(".full-only").forEach(function (panel) {
+      if (fullMode) {
+        panel.removeAttribute("inert");
+        panel.setAttribute("aria-hidden", "false");
+      } else {
+        panel.setAttribute("inert", "");
+        panel.setAttribute("aria-hidden", "true");
+      }
+    });
+    var toggleLabel = fullMode ? "かんたん版にもどす" : "自由研究レポート（本格版）にする";
+    var printLabel = fullMode ? "本格版レポートを印刷" : "かんたんレポートを印刷";
+    document.querySelectorAll("[data-full-toggle]").forEach(function (button) {
+      button.setAttribute("aria-expanded", fullMode ? "true" : "false");
+      button.textContent = toggleLabel;
+    });
+    document.querySelectorAll("[data-print-mode]").forEach(function (button) {
+      button.textContent = printLabel;
+    });
   }
 
   function insertMethod() {
@@ -883,21 +854,8 @@
     saveNow();
     renderReport();
     if (mode === "full") renderFullReport();
-    var dialog = fullDialog();
-    if (dialog && dialog.open) {
-      reopenFullDialog = true;
-      closeFullDialog();
-    }
     document.body.setAttribute("data-print", mode);
-    try {
-      window.print();
-    } catch (error) {
-      document.body.removeAttribute("data-print");
-      if (reopenFullDialog) {
-        reopenFullDialog = false;
-        openFullDialog();
-      }
-    }
+    window.print();
   }
 
   function todoNote(message) {
@@ -1012,14 +970,8 @@
       scheduleSave();
     });
 
-    nameInput.addEventListener("input", function () {
-      updateFullWho();
-      scheduleSave();
-    });
-    gradeInput.addEventListener("input", function () {
-      updateFullWho();
-      scheduleSave();
-    });
+    nameInput.addEventListener("input", scheduleSave);
+    gradeInput.addEventListener("input", scheduleSave);
     reflectionInput.addEventListener("input", function () {
       updateDiscussionHint();
       scheduleSave();
@@ -1053,46 +1005,32 @@
         beginPrint(button.getAttribute("data-print-trigger"));
       });
     });
-    document.querySelectorAll("[data-open-full]").forEach(function (button) {
+    document.querySelectorAll("[data-print-mode]").forEach(function (button) {
       button.addEventListener("click", function () {
-        openFullDialog(button);
+        beginPrint(fullMode ? "full" : "report");
       });
     });
-    document.querySelectorAll("[data-close-full]").forEach(function (button) {
-      button.addEventListener("click", closeFullDialog);
-    });
-    var dialog = fullDialog();
-    if (dialog) {
-      dialog.addEventListener("click", function (event) {
-        if (event.target === dialog) closeFullDialog();
+    document.querySelectorAll("[data-full-toggle]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var next = !fullMode;
+        if (!next) {
+          var active = document.activeElement;
+          var inside = false;
+          document.querySelectorAll(".full-only").forEach(function (panel) {
+            if (active && panel.contains(active)) inside = true;
+          });
+          if (inside) button.focus();
+        }
+        applyFullMode(next);
+        saveNow();
       });
-      dialog.addEventListener("input", scheduleSave);
-    }
-    document.getElementById("print-full-btn").addEventListener("click", function () {
-      beginPrint("full");
+    });
+    document.getElementById("sheet-form").addEventListener("input", function (event) {
+      var target = event.target;
+      if (target && target.closest && target.closest(".full-only")) scheduleSave();
     });
     document.getElementById("insert-method").addEventListener("click", insertMethod);
-    document.getElementById("edit-who").addEventListener("click", function () {
-      closeFullDialog();
-      window.setTimeout(function () {
-        nameInput.focus();
-        var card = nameInput.closest(".start-card");
-        if (card && card.scrollIntoView) card.scrollIntoView({ block: "center" });
-      }, 0);
-    });
-    document.addEventListener("keydown", function (event) {
-      if (event.key !== "Escape") return;
-      var openDialog = fullDialog();
-      if (!openDialog || !openDialog.classList.contains("is-fallback")) return;
-      if (!openDialog.hasAttribute("open")) return;
-      closeFullDialog();
-    });
     window.addEventListener("beforeprint", function () {
-      var openDialog = fullDialog();
-      if (openDialog && openDialog.open) {
-        reopenFullDialog = true;
-        closeFullDialog();
-      }
       if (!document.body.getAttribute("data-print")) {
         document.body.setAttribute("data-print", "blank");
         document.body.setAttribute("data-print-auto", "1");
@@ -1102,10 +1040,6 @@
     window.addEventListener("afterprint", function () {
       document.body.removeAttribute("data-print");
       document.body.removeAttribute("data-print-auto");
-      if (reopenFullDialog) {
-        reopenFullDialog = false;
-        openFullDialog();
-      }
     });
 
     document.getElementById("clear-log").addEventListener("click", clearLog);
