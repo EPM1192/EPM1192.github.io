@@ -615,7 +615,7 @@
     if (!hint || !reflectionInput) return;
     var existing = reflectionInput.value.trim();
     if (!existing) {
-      hint.textContent = "れい：予想では10cmになると思ったけど、7日目は8cmだった。色は予想どおり緑になった。観察シートの「わかったこと・かんそう」とは別に書こう。";
+      hint.textContent = "観察シートの「わかったこと・かんそう」とは別に書こう。";
       return;
     }
     var clip = existing.length > 42 ? existing.slice(0, 42) + "…" : existing;
